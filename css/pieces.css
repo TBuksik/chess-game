@@ -6,7 +6,7 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    font-size: 48px;
+    font-size: 64px;
     line-height: 1;
     user-select: none;
     transition: all var(--transition-fast);
