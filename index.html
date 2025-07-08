@@ -13,37 +13,12 @@
 </head>
 <body>
     <div class="game-container">
-        <!-- Left Sidebar -->
-        <div class="sidebar left-sidebar">
-            <div class="player-info">
-                <div class="player-avatar">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23ff6b6b'/%3E%3Ccircle cx='35' cy='40' r='5' fill='%23000'/%3E%3Ccircle cx='65' cy='40' r='5' fill='%23000'/%3E%3Cpath d='M30 65 Q50 80 70 65' stroke='%23000' stroke-width='3' fill='none'/%3E%3C/svg%3E" alt="Player 1">
-                </div>
-                <div class="player-details">
-                    <div class="player-name">Player 1</div>
-                    <div class="player-color">WHITE</div>
-                </div>
-            </div>
-
-            <div class="game-info">
-                <div class="timer white-timer">
-                    <div class="timer-label">Time</div>
-                    <div class="timer-value">∞</div>
-                </div>
-                
-                <div class="captured-pieces white-captured">
-                    <div class="captured-label">Captured</div>
-                    <div class="captured-list"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Game Area -->
+        <!-- Main Game Area (Chess Board) -->
         <div class="main-game">
             <div class="game-header">
                 <div class="ai-indicator">
                     <div class="ai-dot"></div>
-                    <span>ChessBot</span>
+                    <span>2-Player Mode</span>
                 </div>
                 <div class="game-status">
                     <div id="game-message">White to move</div>
@@ -70,39 +45,69 @@
         </div>
 
         <!-- Right Sidebar -->
-        <div class="sidebar right-sidebar">
-            <div class="controls">
-                <button class="control-btn" id="new-game">New Game</button>
-                <button class="control-btn" id="undo-move">Undo</button>
-                <button class="control-btn" id="hint">Hint</button>
+        <div class="sidebar">
+            <!-- Opponent (Black Player) Info at Top -->
+            <div class="opponent-section">
+                <div class="player-info black-player">
+                    <div class="player-avatar">
+                        <div class="ai-indicator-large">
+                            <div class="ai-dot-large"></div>
+                        </div>
+                    </div>
+                    <div class="player-details">
+                        <div class="player-name">Player 2</div>
+                        <div class="player-color">BLACK</div>
+                    </div>
+                    <div class="player-status">
+                        <div class="time-info">
+                            <div class="timer-icon">⏱</div>
+                            <div class="time-value">∞</div>
+                        </div>
+                        <div class="next-move-indicator">e2</div>
+                    </div>
+                </div>
             </div>
 
+            <!-- Move History in Middle -->
             <div class="move-history">
-                <div class="history-header">Move History</div>
+                <div class="history-header">
+                    <span>Move History</span>
+                    <span class="game-status-text">Game in progress...</span>
+                </div>
                 <div class="move-list" id="move-list">
                     <!-- Moves will be added here -->
                 </div>
             </div>
 
-            <div class="player-info black-player">
-                <div class="player-avatar">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2333a1cc'/%3E%3Ccircle cx='35' cy='40' r='5' fill='%23000'/%3E%3Ccircle cx='65' cy='40' r='5' fill='%23000'/%3E%3Cpath d='M30 65 Q50 80 70 65' stroke='%23000' stroke-width='3' fill='none'/%3E%3C/svg%3E" alt="Player 2">
-                </div>
-                <div class="player-details">
-                    <div class="player-name">Player 2</div>
-                    <div class="player-color">BLACK</div>
-                </div>
-            </div>
-
-            <div class="game-info">
-                <div class="timer black-timer">
-                    <div class="timer-label">Time</div>
-                    <div class="timer-value">∞</div>
+            <!-- Player (White Player) Info at Bottom -->
+            <div class="player-section">
+                <div class="player-info white-player">
+                    <div class="player-avatar">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23ff6b6b'/%3E%3Ccircle cx='35' cy='40' r='5' fill='%23000'/%3E%3Ccircle cx='65' cy='40' r='5' fill='%23000'/%3E%3Cpath d='M30 65 Q50 80 70 65' stroke='%23000' stroke-width='3' fill='none'/%3E%3C/svg%3E" alt="Player 1">
+                    </div>
+                    <div class="player-details">
+                        <div class="player-name">Player 1</div>
+                        <div class="player-color">WHITE</div>
+                    </div>
                 </div>
                 
-                <div class="captured-pieces black-captured">
-                    <div class="captured-label">Captured</div>
-                    <div class="captured-list"></div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-icon">👤</div>
+                        <div class="stat-label">Games</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-label">Stats</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-label">Rank</div>
+                    </div>
+                    <div class="stat-item active">
+                        <div class="stat-icon">♘</div>
+                        <div class="stat-label">f3</div>
+                    </div>
                 </div>
             </div>
         </div>
