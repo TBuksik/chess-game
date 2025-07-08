@@ -55,10 +55,9 @@ body {
 }
 
 .game-container {
-    display: grid;
-    grid-template-columns: auto 450px;
+    display: flex;
     min-height: 100vh;
-    gap: var(--space-lg);
+    gap: 0;
     padding: var(--space-xl);
     max-width: 1600px;
     margin: 0 auto;
@@ -69,16 +68,16 @@ body {
 /* Sidebar Styles */
 .sidebar {
     background: var(--bg-secondary);
-    border-radius: var(--radius-lg);
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
     padding: var(--space-xl);
     box-shadow: 0 8px 32px var(--shadow);
     border: 1px solid var(--border-color);
+    border-left: none;
     height: 850px;
+    width: 500px;
     display: flex;
     flex-direction: column;
     gap: var(--space-lg);
-    justify-self: start;
-    align-self: center;
 }
 
 /* Opponent Info at Top */
@@ -300,21 +299,19 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: var(--space-lg);
-    justify-self: end;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+    padding: var(--space-xl);
+    box-shadow: 0 8px 32px var(--shadow);
+    border: 1px solid var(--border-color);
+    border-right: none;
+    height: 850px;
+    width: 800px;
 }
 
+/* Game Header - Hidden for compact layout */
 .game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 750px;
-    margin-bottom: var(--space-xl);
-    padding: var(--space-xl);
-    background: var(--bg-secondary);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
+    display: none;
 }
 
 .ai-indicator {
@@ -349,8 +346,8 @@ body {
 .chess-board-container {
     position: relative;
     display: grid;
-    grid-template-columns: 40px 1fr 40px;
-    gap: var(--space-lg);
+    grid-template-columns: 30px 1fr 30px;
+    gap: var(--space-sm);
     align-items: center;
 }
 
@@ -358,23 +355,23 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100%;
-    font-size: var(--font-size-lg);
+    height: 800px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--text-secondary);
 }
 
 .board-coordinates.left,
 .board-coordinates.right {
-    height: 720px;
+    height: 560px;
 }
 
 .board-coordinates.bottom {
     flex-direction: row;
     justify-content: space-between;
-    width: 720px;
+    width: 560px;
     height: auto;
-    margin-top: var(--space-lg);
+    margin-top: var(--space-sm);
 }
 
 .timer-value {

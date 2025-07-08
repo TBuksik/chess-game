@@ -1,12 +1,12 @@
 /* Chess Board Styles */
 .chess-board {
     display: grid;
-    grid-template-columns: repeat(8, 90px);
-    grid-template-rows: repeat(8, 90px);
-    border: 4px solid var(--accent-primary);
-    border-radius: var(--radius-lg);
+    grid-template-columns: repeat(8, 70px);
+    grid-template-rows: repeat(8, 70px);
+    border: 3px solid var(--accent-primary);
+    border-radius: var(--radius-md);
     overflow: hidden;
-    box-shadow: 0 12px 48px var(--shadow);
+    box-shadow: 0 8px 32px var(--shadow);
     background: var(--bg-secondary);
 }
 
@@ -98,7 +98,7 @@
 
 /* Piece Styles */
 .piece {
-    font-size: 48px;
+    font-size: 42px;
     line-height: 1;
     cursor: pointer;
     user-select: none;
