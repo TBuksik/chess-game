@@ -1,8 +1,8 @@
 /* Chess Board Styles */
 .chess-board {
     display: grid;
-    grid-template-columns: repeat(8, 70px);
-    grid-template-rows: repeat(8, 70px);
+    grid-template-columns: repeat(8, 90px);
+    grid-template-rows: repeat(8, 90px);
     border: 3px solid var(--accent-primary);
     border-radius: var(--radius-md);
     overflow: hidden;
@@ -98,7 +98,7 @@
 
 /* Piece Styles */
 .piece {
-    font-size: 42px;
+    font-size: 52px;
     line-height: 1;
     cursor: pointer;
     user-select: none;
@@ -272,6 +272,34 @@
 /* Responsive Board */
 @media (max-width: 768px) {
     .chess-board {
+        grid-template-columns: repeat(8, 75px);
+        grid-template-rows: repeat(8, 75px);
+    }
+    
+    .piece {
+        font-size: 48px;
+    }
+    
+    .board-coordinates div {
+        height: 75px;
+    }
+    
+    .board-coordinates.bottom div {
+        width: 75px;
+    }
+    
+    .board-coordinates.left,
+    .board-coordinates.right {
+        height: 600px;
+    }
+    
+    .board-coordinates.bottom {
+        width: 600px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chess-board {
         grid-template-columns: repeat(8, 60px);
         grid-template-rows: repeat(8, 60px);
     }
@@ -295,33 +323,5 @@
     
     .board-coordinates.bottom {
         width: 480px;
-    }
-}
-
-@media (max-width: 480px) {
-    .chess-board {
-        grid-template-columns: repeat(8, 45px);
-        grid-template-rows: repeat(8, 45px);
-    }
-    
-    .piece {
-        font-size: 30px;
-    }
-    
-    .board-coordinates div {
-        height: 45px;
-    }
-    
-    .board-coordinates.bottom div {
-        width: 45px;
-    }
-    
-    .board-coordinates.left,
-    .board-coordinates.right {
-        height: 360px;
-    }
-    
-    .board-coordinates.bottom {
-        width: 360px;
     }
 }

@@ -306,7 +306,7 @@ body {
     border: 1px solid var(--border-color);
     border-right: none;
     height: 850px;
-    width: 800px;
+    min-width: 800px;
 }
 
 /* Game Header - Hidden for compact layout */
@@ -355,7 +355,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 800px;
+    height: 720px;
     font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--text-secondary);
@@ -363,15 +363,29 @@ body {
 
 .board-coordinates.left,
 .board-coordinates.right {
-    height: 560px;
+    height: 720px;
 }
 
 .board-coordinates.bottom {
     flex-direction: row;
     justify-content: space-between;
-    width: 560px;
+    width: 720px;
     height: auto;
     margin-top: var(--space-sm);
+}
+
+.board-coordinates div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 90px;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+
+.board-coordinates.bottom div {
+    width: 90px;
+    height: 30px;
 }
 
 .timer-value {
