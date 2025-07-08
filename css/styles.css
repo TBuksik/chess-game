@@ -56,13 +56,14 @@ body {
 
 .game-container {
     display: grid;
-    grid-template-columns: 1fr 450px;
+    grid-template-columns: auto 450px;
     min-height: 100vh;
-    gap: var(--space-xl);
+    gap: var(--space-lg);
     padding: var(--space-xl);
-    max-width: 1800px;
+    max-width: 1600px;
     margin: 0 auto;
     align-items: center;
+    justify-content: center;
 }
 
 /* Sidebar Styles */
@@ -72,10 +73,11 @@ body {
     padding: var(--space-xl);
     box-shadow: 0 8px 32px var(--shadow);
     border: 1px solid var(--border-color);
-    height: 800px;
+    height: 850px;
     display: flex;
     flex-direction: column;
-    gap: var(--space-xl);
+    gap: var(--space-lg);
+    justify-self: start;
     align-self: center;
 }
 
@@ -299,6 +301,7 @@ body {
     align-items: center;
     justify-content: center;
     padding: var(--space-lg);
+    justify-self: end;
 }
 
 .game-header {
@@ -306,9 +309,9 @@ body {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 800px;
+    max-width: 750px;
     margin-bottom: var(--space-xl);
-    padding: var(--space-lg);
+    padding: var(--space-xl);
     background: var(--bg-secondary);
     border-radius: var(--radius-lg);
     border: 1px solid var(--border-color);
@@ -346,8 +349,8 @@ body {
 .chess-board-container {
     position: relative;
     display: grid;
-    grid-template-columns: 32px 1fr 32px;
-    gap: var(--space-md);
+    grid-template-columns: 40px 1fr 40px;
+    gap: var(--space-lg);
     align-items: center;
 }
 
@@ -356,7 +359,7 @@ body {
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-lg);
     font-weight: 600;
     color: var(--text-secondary);
 }
@@ -371,7 +374,7 @@ body {
     justify-content: space-between;
     width: 720px;
     height: auto;
-    margin-top: var(--space-md);
+    margin-top: var(--space-lg);
 }
 
 .timer-value {
