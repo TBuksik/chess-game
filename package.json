@@ -1,0 +1,47 @@
+{
+  "name": "chess-game",
+  "version": "1.0.0",
+  "description": "A modern, responsive chess game built with HTML5, CSS3, and JavaScript",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 8000",
+    "dev": "http-server -p 8000 -c-1",
+    "build": "echo 'No build process needed for vanilla JS'",
+    "test": "echo 'Tests not implemented yet'",
+    "lint": "eslint js/**/*.js",
+    "lint:fix": "eslint js/**/*.js --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/chess-game.git"
+  },
+  "keywords": [
+    "chess",
+    "game",
+    "javascript",
+    "html5",
+    "css3",
+    "vanilla-js",
+    "board-game",
+    "responsive",
+    "web-game"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/chess-game/issues"
+  },
+  "homepage": "https://github.com/yourusername/chess-game#readme",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "eslint": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

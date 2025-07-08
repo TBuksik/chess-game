@@ -1,0 +1,271 @@
+/* Chess Pieces Unicode Symbols */
+.piece {
+    font-family: 'Segoe UI Symbol', 'DejaVu Sans', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 48px;
+    line-height: 1;
+    user-select: none;
+    transition: all var(--transition-fast);
+}
+
+/* White Pieces */
+.piece.white.king::after { content: '♔'; }
+.piece.white.queen::after { content: '♕'; }
+.piece.white.rook::after { content: '♖'; }
+.piece.white.bishop::after { content: '♗'; }
+.piece.white.knight::after { content: '♘'; }
+.piece.white.pawn::after { content: '♙'; }
+
+/* Black Pieces */
+.piece.black.king::after { content: '♚'; }
+.piece.black.queen::after { content: '♛'; }
+.piece.black.rook::after { content: '♜'; }
+.piece.black.bishop::after { content: '♝'; }
+.piece.black.knight::after { content: '♞'; }
+.piece.black.pawn::after { content: '♟'; }
+
+/* Piece Colors and Effects */
+.piece.white::after {
+    color: #ffffff;
+    text-shadow: 
+        1px 1px 2px rgba(0, 0, 0, 0.8),
+        -1px -1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.piece.black::after {
+    color: #2d2d2d;
+    text-shadow: 
+        1px 1px 2px rgba(255, 255, 255, 0.3),
+        -1px -1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Piece States */
+.piece:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+.piece.selected {
+    transform: scale(1.15);
+    filter: 
+        drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6))
+        drop-shadow(0 0 8px var(--accent-secondary));
+}
+
+.piece.dragging {
+    transform: scale(1.2);
+    filter: 
+        drop-shadow(0 8px 16px rgba(0, 0, 0, 0.8))
+        drop-shadow(0 0 12px var(--accent-primary));
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.piece.attacking {
+    animation: attack-glow 0.5s ease-out;
+}
+
+@keyframes attack-glow {
+    0% { 
+        filter: drop-shadow(0 0 0px var(--accent-danger));
+    }
+    50% { 
+        filter: drop-shadow(0 0 12px var(--accent-danger));
+        transform: scale(1.2);
+    }
+    100% { 
+        filter: drop-shadow(0 0 0px var(--accent-danger));
+        transform: scale(1);
+    }
+}
+
+.piece.captured {
+    animation: capture-fade 0.5s ease-out forwards;
+}
+
+@keyframes capture-fade {
+    0% { 
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    50% { 
+        transform: scale(1.2) rotate(180deg);
+        opacity: 0.5;
+    }
+    100% { 
+        transform: scale(0) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Piece Movement Animation */
+.piece.moving {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Special Piece States */
+.piece.king.in-check {
+    animation: check-warning 1s infinite;
+}
+
+@keyframes check-warning {
+    0%, 100% { 
+        filter: drop-shadow(0 0 0px var(--accent-danger));
+    }
+    50% { 
+        filter: drop-shadow(0 0 8px var(--accent-danger));
+    }
+}
+
+.piece.promoted {
+    animation: promotion-celebration 1s ease-out;
+}
+
+@keyframes promotion-celebration {
+    0% { 
+        transform: scale(1);
+        filter: drop-shadow(0 0 0px var(--accent-secondary));
+    }
+    25% { 
+        transform: scale(1.3);
+        filter: drop-shadow(0 0 12px var(--accent-secondary));
+    }
+    50% { 
+        transform: scale(0.9);
+        filter: drop-shadow(0 0 8px var(--accent-secondary));
+    }
+    75% { 
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 4px var(--accent-secondary));
+    }
+    100% { 
+        transform: scale(1);
+        filter: drop-shadow(0 0 0px var(--accent-secondary));
+    }
+}
+
+/* Castling Animation */
+.piece.castling {
+    animation: castle-move 0.6s ease-in-out;
+}
+
+@keyframes castle-move {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(var(--castle-distance, 0)); }
+    100% { transform: translateX(0); }
+}
+
+/* En Passant Animation */
+.piece.en-passant {
+    animation: en-passant-move 0.5s ease-out;
+}
+
+@keyframes en-passant-move {
+    0% { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+    50% { 
+        transform: translateY(-20px);
+        opacity: 0.7;
+    }
+    100% { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Captured Piece Display */
+.captured-piece {
+    font-size: 20px;
+    opacity: 0.8;
+    margin: 2px;
+    transition: all var(--transition-fast);
+}
+
+.captured-piece:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+/* Piece Selection Indicator */
+.piece-indicator {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border: 2px solid var(--accent-primary);
+    border-radius: 50%;
+    animation: selection-pulse 1.5s infinite;
+    pointer-events: none;
+}
+
+@keyframes selection-pulse {
+    0%, 100% { 
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 0.5;
+        transform: scale(1.1);
+    }
+}
+
+/* Responsive Piece Sizing */
+@media (max-width: 768px) {
+    .piece {
+        font-size: 40px;
+    }
+    
+    .captured-piece {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .piece {
+        font-size: 30px;
+    }
+    
+    .captured-piece {
+        font-size: 14px;
+    }
+}
+
+/* High DPI / Retina Display Support */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .piece {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Accessibility */
+.piece:focus {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .piece,
+    .piece:hover,
+    .piece.selected,
+    .piece.dragging {
+        transition: none;
+        animation: none;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .piece {
+        color: black !important;
+        text-shadow: none !important;
+        filter: none !important;
+    }
+}
