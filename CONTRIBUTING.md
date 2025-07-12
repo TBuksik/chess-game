@@ -33,7 +33,7 @@ Thank you for your interest in contributing to this chess game project! This doc
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/chess-game.git
+git clone https://github.com/TBuksik/chess-game.git
 cd chess-game
 ```
 
@@ -259,7 +259,6 @@ If you need help or have questions:
 
 1. Check existing issues and documentation
 2. Create a new issue with the "question" label
-3. Join our community discussions (if available)
 
 ## Recognition
 

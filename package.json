@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/chess-game.git"
+    "url": "git+https://github.com/TBuksik/chess-game.git"
   },
   "keywords": [
     "chess",
@@ -26,12 +26,12 @@
     "responsive",
     "web-game"
   ],
-  "author": "Your Name <your.email@example.com>",
+  "author": "Tymoteusz tbuksik08@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yourusername/chess-game/issues"
+    "url": "https://github.com/TBuksik/chess-game/issues"
   },
-  "homepage": "https://github.com/yourusername/chess-game#readme",
+  "homepage": "https://github.com/TBuksik/chess-game#readme",
   "devDependencies": {
     "http-server": "^14.1.1",
     "eslint": "^8.0.0"
