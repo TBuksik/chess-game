@@ -19,7 +19,7 @@ A modern, responsive chess game built with vanilla HTML5, CSS3, and JavaScript. 
 
 ## 🚀 Live Demo
 
-[Play Chess Game Online](https://your-demo-link.com) *(Coming Soon)*
+[Play Chess Game Online](chess-game-one-amber.vercel.app)
 
 ## 🎮 How to Play
 
@@ -48,7 +48,7 @@ A modern, responsive chess game built with vanilla HTML5, CSS3, and JavaScript. 
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/yourusername/chess-game.git
+git clone https://github.com/TBuksik/chess-game.git
 cd chess-game
 ```
 
@@ -204,9 +204,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-Your Name - [your.email@example.com](mailto:your.email@example.com)
+Your Name - [tbuksik08@gmail.com](mailto:tbuksik08@gmail.com)
 
-Project Link: [https://github.com/yourusername/chess-game](https://github.com/yourusername/chess-game)
+Project Link: [https://github.com/TBuksik/chess-game](https://github.com/TBuksik/chess-game)
 
 ---
 
