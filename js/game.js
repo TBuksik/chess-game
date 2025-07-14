@@ -413,10 +413,24 @@ class ChessGame {
      * Update move history display
      */
     updateMoveHistory() {
+        // Update desktop move history
         const moveListElement = document.getElementById('move-list');
-        if (!moveListElement) return;
+        if (moveListElement) {
+            this.updateMoveHistoryElement(moveListElement);
+        }
         
-        moveListElement.innerHTML = '';
+        // Update mobile move history
+        const moveListMobileElement = document.getElementById('move-list-mobile');
+        if (moveListMobileElement) {
+            this.updateMoveHistoryElement(moveListMobileElement, true);
+        }
+    }
+    
+    /**
+     * Update a specific move history element
+     */
+    updateMoveHistoryElement(element, isMobile = false) {
+        element.innerHTML = '';
         
         for (let i = 0; i < this.moveHistory.length; i += 2) {
             const moveNumber = Math.floor(i / 2) + 1;
@@ -426,17 +440,27 @@ class ChessGame {
             const moveRow = document.createElement('div');
             moveRow.className = 'move-row';
             
-            let moveText = `${moveNumber}. ${whiteMove.notation}`;
-            if (blackMove) {
-                moveText += ` ${blackMove.notation}`;
+            let moveText;
+            if (isMobile) {
+                // Compact format for mobile
+                moveText = `${moveNumber}.${whiteMove.notation}`;
+                if (blackMove) {
+                    moveText += ` ${blackMove.notation}`;
+                }
+            } else {
+                // Full format for desktop
+                moveText = `${moveNumber}. ${whiteMove.notation}`;
+                if (blackMove) {
+                    moveText += ` ${blackMove.notation}`;
+                }
             }
             
             moveRow.textContent = moveText;
-            moveListElement.appendChild(moveRow);
+            element.appendChild(moveRow);
         }
         
         // Scroll to bottom
-        moveListElement.scrollTop = moveListElement.scrollHeight;
+        element.scrollTop = element.scrollHeight;
     }
     
     /**

@@ -438,11 +438,131 @@ body {
     }
 }
 
+/* Mobile/Desktop Layout Control */
+.mobile-only {
+    display: none;
+}
+
+.desktop-only {
+    display: block;
+}
+
+@media (max-width: 1024px) {
+    .mobile-only {
+        display: block;
+    }
+    
+    .desktop-only {
+        display: none;
+    }
+}
+
+/* Mobile Player Cards */
+.opponent-player,
+.current-player {
+    width: 100%;
+    padding: 10px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    margin: 5px 0;
+}
+
+.opponent-player .player-info,
+.current-player .player-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-sm);
+}
+
+.opponent-player .player-avatar,
+.current-player .player-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 2px solid var(--accent-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.opponent-player .player-avatar img,
+.current-player .player-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.opponent-player .player-details,
+.current-player .player-details {
+    flex: 1;
+}
+
+.opponent-player .player-name,
+.current-player .player-name {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.opponent-player .player-color,
+.current-player .player-color {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.opponent-player .player-status,
+.current-player .player-status {
+    display: flex;
+    align-items: center;
+}
+
+.opponent-player .time-info,
+.current-player .time-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+/* Compact Move History for Mobile */
+.move-history-compact {
+    width: 100%;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: 8px;
+    margin-top: 10px;
+    border: 1px solid var(--border-color);
+    max-height: 80px;
+    overflow-y: auto;
+}
+
+.move-history-compact .move-list {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+.move-history-compact .move-row {
+    padding: 2px 0;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.move-history-compact .move-row:last-child {
+    border-bottom: none;
+}
+
 @media (max-width: 1024px) {
     .game-container {
         flex-direction: column;
-        gap: 10px;
-        padding: 10px;
+        gap: 5px;
+        padding: 5px;
         align-items: center;
         min-height: 100vh;
         justify-content: flex-start;
@@ -453,19 +573,15 @@ body {
         height: auto;
         border-radius: var(--radius-lg);
         border: 1px solid var(--border-color);
-        padding: var(--space-md);
-        margin-bottom: 10px;
+        padding: 10px;
+        min-width: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     
-    .sidebar {
-        width: 100%;
-        max-width: none;
-        height: auto;
-        flex-direction: column;
-        padding: var(--space-md);
-        gap: var(--space-md);
-        border-radius: var(--radius-lg);
-        border: 1px solid var(--border-color);
+    .chess-board-container {
+        margin: 10px 0;
     }
 }
 
