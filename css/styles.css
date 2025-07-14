@@ -441,42 +441,57 @@ body {
 @media (max-width: 1024px) {
     .game-container {
         flex-direction: column;
-        gap: 20px;
-        padding: 15px;
+        gap: 10px;
+        padding: 10px;
         align-items: center;
+        min-height: 100vh;
+        justify-content: flex-start;
+    }
+    
+    .main-game {
+        width: 100%;
+        height: auto;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
+        padding: var(--space-md);
+        margin-bottom: 10px;
     }
     
     .sidebar {
         width: 100%;
-        max-width: 560px;
+        max-width: none;
         height: auto;
-        flex-direction: row;
-        justify-content: space-around;
-        padding: 15px;
-        gap: 20px;
-    }
-    
-    .sidebar-section {
-        flex: 1;
-        margin: 0 10px;
-        min-width: 0; /* Allow text to wrap */
-    }
-    
-    .coordinates {
-        font-size: 12px;
+        flex-direction: column;
+        padding: var(--space-md);
+        gap: var(--space-md);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
     }
 }
 
 @media (max-width: 768px) {
+    body {
+        padding: 0;
+        margin: 0;
+    }
+    
     .game-container {
+        padding: 5px;
+        gap: 5px;
+        min-height: 100vh;
+        justify-content: flex-start;
+    }
+    
+    .main-game {
         padding: 10px;
-        gap: 15px;
+        width: 100%;
+        max-width: 100%;
     }
     
     .sidebar {
-        max-width: 480px;
-        padding: 12px;
-        gap: 15px;
+        max-width: 100%;
+        padding: 10px;
+        gap: 10px;
     }
     
     .player-info h3 {
