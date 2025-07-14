@@ -392,47 +392,13 @@
 
 @media (max-width: 600px) {
     .chess-board {
-        grid-template-columns: repeat(8, 50px);
-        grid-template-rows: repeat(8, 50px);
+        grid-template-columns: repeat(8, 45px);
+        grid-template-rows: repeat(8, 45px);
+        margin: 0 auto;
     }
     
     .piece {
-        font-size: 30px;
-    }
-    
-    .square.valid-move::after {
-        width: 14px;
-        height: 14px;
-    }
-    
-    .board-coordinates div {
-        height: 50px;
-        font-size: 10px;
-    }
-    
-    .board-coordinates.bottom div {
-        width: 50px;
-    }
-    
-    .board-coordinates.left,
-    .board-coordinates.right {
-        height: 400px;
-    }
-    
-    .board-coordinates.bottom {
-        width: 400px;
-    }
-}
-
-@media (max-width: 480px) {
-    .chess-board {
-        grid-template-columns: repeat(8, 40px);
-        grid-template-rows: repeat(8, 40px);
-        border-width: 2px;
-    }
-    
-    .piece {
-        font-size: 24px;
+        font-size: 26px;
     }
     
     .square.valid-move::after {
@@ -441,21 +407,57 @@
     }
     
     .board-coordinates div {
-        height: 40px;
-        font-size: 9px;
+        height: 45px;
+        font-size: 10px;
     }
     
     .board-coordinates.bottom div {
-        width: 40px;
+        width: 45px;
     }
     
     .board-coordinates.left,
     .board-coordinates.right {
-        height: 320px;
+        height: 360px;
     }
     
     .board-coordinates.bottom {
-        width: 320px;
+        width: 360px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chess-board {
+        grid-template-columns: repeat(8, 38px);
+        grid-template-rows: repeat(8, 38px);
+        border-width: 2px;
+        margin: 0 auto;
+    }
+    
+    .piece {
+        font-size: 22px;
+    }
+    
+    .square.valid-move::after {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .board-coordinates div {
+        height: 38px;
+        font-size: 9px;
+    }
+    
+    .board-coordinates.bottom div {
+        width: 38px;
+    }
+    
+    .board-coordinates.left,
+    .board-coordinates.right {
+        height: 304px;
+    }
+    
+    .board-coordinates.bottom {
+        width: 304px;
     }
 }
 
@@ -518,28 +520,57 @@
 /* Landscape mode adjustments for mobile */
 @media (max-width: 768px) and (orientation: landscape) {
     .chess-board {
-        grid-template-columns: repeat(8, 50px);
-        grid-template-rows: repeat(8, 50px);
+        grid-template-columns: repeat(8, 45px);
+        grid-template-rows: repeat(8, 45px);
+        margin: 0 auto;
     }
     
     .piece {
-        font-size: 30px;
+        font-size: 26px;
     }
     
     .board-coordinates div {
-        height: 50px;
+        height: 45px;
     }
     
     .board-coordinates.bottom div {
-        width: 50px;
+        width: 45px;
     }
     
     .board-coordinates.left,
     .board-coordinates.right {
-        height: 400px;
+        height: 360px;
     }
     
     .board-coordinates.bottom {
-        width: 400px;
+        width: 360px;
+    }
+}
+
+@media (max-width: 480px) and (orientation: landscape) {
+    .chess-board {
+        grid-template-columns: repeat(8, 35px);
+        grid-template-rows: repeat(8, 35px);
+    }
+    
+    .piece {
+        font-size: 20px;
+    }
+    
+    .board-coordinates div {
+        height: 35px;
+    }
+    
+    .board-coordinates.bottom div {
+        width: 35px;
+    }
+    
+    .board-coordinates.left,
+    .board-coordinates.right {
+        height: 280px;
+    }
+    
+    .board-coordinates.bottom {
+        width: 280px;
     }
 }
