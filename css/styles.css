@@ -421,55 +421,190 @@ body {
 /* Responsive Design */
 @media (max-width: 1400px) {
     .game-container {
-        grid-template-columns: 1fr 400px;
-        gap: var(--space-lg);
-        padding: var(--space-lg);
+        padding: 20px;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .game-container {
+        padding: 15px;
+        gap: 15px;
+    }
+    
+    .chess-board {
+        width: 640px;
+        height: 640px;
+    }
+    
+    .chess-square {
+        width: 80px;
+        height: 80px;
+        font-size: 46px;
     }
     
     .sidebar {
-        padding: var(--space-lg);
+        height: 640px;
+        width: 350px;
     }
 }
 
 @media (max-width: 1024px) {
     .game-container {
-        grid-template-columns: 1fr;
-        gap: var(--space-md);
-        padding: var(--space-md);
+        flex-direction: column;
+        gap: 20px;
+        padding: 15px;
+        align-items: center;
     }
     
-    .main-game {
-        order: 1;
+    .chess-board {
+        width: 560px;
+        height: 560px;
+    }
+    
+    .chess-square {
+        width: 70px;
+        height: 70px;
+        font-size: 40px;
     }
     
     .sidebar {
-        order: 2;
-        align-self: stretch;
+        width: 100%;
+        max-width: 560px;
+        height: auto;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 15px;
+        gap: 20px;
+    }
+    
+    .sidebar-section {
+        flex: 1;
+        margin: 0 10px;
+        min-width: 0; /* Allow text to wrap */
+    }
+    
+    .coordinates {
+        font-size: 12px;
     }
 }
 
-/* Game Messages */
-.game-message {
-    text-align: center;
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    margin: var(--space-lg) 0;
+@media (max-width: 768px) {
+    .game-container {
+        padding: 10px;
+        gap: 15px;
+    }
+    
+    .chess-board {
+        width: 480px;
+        height: 480px;
+    }
+    
+    .chess-square {
+        width: 60px;
+        height: 60px;
+        font-size: 36px;
+    }
+    
+    .sidebar {
+        max-width: 480px;
+        padding: 12px;
+        gap: 15px;
+    }
+    
+    .player-info h3 {
+        font-size: 1rem;
+        margin-bottom: 8px;
+    }
+    
+    .game-status {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+    
+    .coordinates {
+        font-size: 11px;
+    }
+    
+    .coordinate-row .coordinate,
+    .coordinate-col .coordinate {
+        font-size: 11px;
+    }
 }
 
-.game-message.check {
-    color: var(--accent-danger);
+/* Mobile-specific enhancements */
+@media (max-width: 768px) {
+    /* Disable text selection on mobile */
+    * {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    /* Allow text selection for specific elements */
+    .player-info,
+    .game-status {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
+    }
+    
+    /* Improve scrolling on iOS */
+    body {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Fix viewport issues on iOS */
+    .game-container {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+    }
+    
+    /* Better button styling for mobile */
+    button {
+        min-height: 44px;
+        min-width: 44px;
+    }
 }
 
-.game-message.checkmate {
-    color: var(--accent-danger);
-    animation: pulse 1s infinite;
+/* Prevent zoom on input focus (iOS Safari) */
+@media (max-width: 768px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea,
+    select {
+        font-size: 16px;
+    }
 }
 
-.game-message.stalemate {
-    color: var(--text-secondary);
+/* High DPI screen optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .chess-board {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
 }
 
-/* Utility Classes */
+/* Dark mode adjustments for mobile */
+@media (max-width: 768px) and (prefers-color-scheme: dark) {
+    .chess-board {
+        border-color: var(--accent-primary);
+    }
+    
+    .square.light {
+        background-color: #e8d5b8;
+    }
+    
+    .square.dark {
+        background-color: #a67c52;
+    }
+}
+
 .hidden {
     display: none !important;
 }

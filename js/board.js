@@ -95,6 +95,18 @@ class ChessBoard {
         this.container.addEventListener('drop', this.handleDrop.bind(this));
         this.container.addEventListener('mouseenter', this.handleMouseEnter.bind(this), true);
         this.container.addEventListener('mouseleave', this.handleMouseLeave.bind(this), true);
+        
+        // Touch events for mobile
+        this.container.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
+        this.container.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
+        this.container.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
+        
+        // Prevent default touch behaviors that interfere with chess
+        this.container.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.piece') || e.target.closest('.square')) {
+                e.preventDefault();
+            }
+        });
     }
     
     /**
@@ -462,6 +474,88 @@ class ChessBoard {
         
         this.container.querySelectorAll('.piece.in-check').forEach(piece => {
             piece.classList.remove('in-check');
+        });
+    }
+    
+    /**
+     * Handle touch start for mobile devices
+     */
+    handleTouchStart(e) {
+        if (!e.target.closest('.square')) return;
+        
+        const square = e.target.closest('.square');
+        const row = parseInt(square.dataset.row);
+        const col = parseInt(square.dataset.col);
+        
+        this.touchData = {
+            startSquare: { row, col },
+            startTime: Date.now(),
+            startX: e.touches[0].clientX,
+            startY: e.touches[0].clientY
+        };
+        
+        // Provide visual feedback
+        square.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            if (square.style.transform === 'scale(0.95)') {
+                square.style.transform = '';
+            }
+        }, 150);
+    }
+    
+    /**
+     * Handle touch move for mobile devices
+     */
+    handleTouchMove(e) {
+        if (!this.touchData) return;
+        
+        const currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY;
+        const deltaX = currentX - this.touchData.startX;
+        const deltaY = currentY - this.touchData.startY;
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        
+        // If moved more than 10px, it's a drag gesture
+        if (distance > 10) {
+            this.touchData.isDragging = true;
+        }
+    }
+    
+    /**
+     * Handle touch end for mobile devices
+     */
+    handleTouchEnd(e) {
+        if (!this.touchData) return;
+        
+        const touchDuration = Date.now() - this.touchData.startTime;
+        const endX = e.changedTouches[0].clientX;
+        const endY = e.changedTouches[0].clientY;
+        
+        // Find the square under the touch end position
+        const endElement = document.elementFromPoint(endX, endY);
+        const endSquare = endElement?.closest('.square');
+        
+        if (this.touchData.isDragging && endSquare) {
+            // Handle drag and drop
+            const endRow = parseInt(endSquare.dataset.row);
+            const endCol = parseInt(endSquare.dataset.col);
+            
+            if (this.touchData.startSquare.row !== endRow || this.touchData.startSquare.col !== endCol) {
+                this.handleMove(this.touchData.startSquare, { row: endRow, col: endCol });
+            }
+        } else if (touchDuration < 300 && !this.touchData.isDragging) {
+            // Handle tap (short touch without dragging)
+            this.handleSquareClick({
+                target: document.querySelector(`[data-row="${this.touchData.startSquare.row}"][data-col="${this.touchData.startSquare.col}"]`)
+            });
+        }
+        
+        // Reset touch data
+        this.touchData = null;
+        
+        // Clear any transform effects
+        this.container.querySelectorAll('.square').forEach(square => {
+            square.style.transform = '';
         });
     }
 }

@@ -298,10 +298,39 @@
     }
 }
 
-@media (max-width: 480px) {
+/* Responsive Design for Mobile */
+@media (max-width: 1200px) {
     .chess-board {
-        grid-template-columns: repeat(8, 60px);
-        grid-template-rows: repeat(8, 60px);
+        grid-template-columns: repeat(8, 80px);
+        grid-template-rows: repeat(8, 80px);
+    }
+    
+    .piece {
+        font-size: 46px;
+    }
+    
+    .board-coordinates div {
+        height: 80px;
+    }
+    
+    .board-coordinates.bottom div {
+        width: 80px;
+    }
+    
+    .board-coordinates.left,
+    .board-coordinates.right {
+        height: 640px;
+    }
+    
+    .board-coordinates.bottom {
+        width: 640px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .chess-board {
+        grid-template-columns: repeat(8, 70px);
+        grid-template-rows: repeat(8, 70px);
     }
     
     .piece {
@@ -309,7 +338,42 @@
     }
     
     .board-coordinates div {
+        height: 70px;
+    }
+    
+    .board-coordinates.bottom div {
+        width: 70px;
+    }
+    
+    .board-coordinates.left,
+    .board-coordinates.right {
+        height: 560px;
+    }
+    
+    .board-coordinates.bottom {
+        width: 560px;
+    }
+}
+
+@media (max-width: 768px) {
+    .chess-board {
+        grid-template-columns: repeat(8, 60px);
+        grid-template-rows: repeat(8, 60px);
+        border-width: 2px;
+    }
+    
+    .piece {
+        font-size: 36px;
+    }
+    
+    .square.valid-move::after {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .board-coordinates div {
         height: 60px;
+        font-size: 11px;
     }
     
     .board-coordinates.bottom div {
@@ -323,5 +387,159 @@
     
     .board-coordinates.bottom {
         width: 480px;
+    }
+}
+
+@media (max-width: 600px) {
+    .chess-board {
+        grid-template-columns: repeat(8, 50px);
+        grid-template-rows: repeat(8, 50px);
+    }
+    
+    .piece {
+        font-size: 30px;
+    }
+    
+    .square.valid-move::after {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .board-coordinates div {
+        height: 50px;
+        font-size: 10px;
+    }
+    
+    .board-coordinates.bottom div {
+        width: 50px;
+    }
+    
+    .board-coordinates.left,
+    .board-coordinates.right {
+        height: 400px;
+    }
+    
+    .board-coordinates.bottom {
+        width: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chess-board {
+        grid-template-columns: repeat(8, 40px);
+        grid-template-rows: repeat(8, 40px);
+        border-width: 2px;
+    }
+    
+    .piece {
+        font-size: 24px;
+    }
+    
+    .square.valid-move::after {
+        width: 12px;
+        height: 12px;
+    }
+    
+    .board-coordinates div {
+        height: 40px;
+        font-size: 9px;
+    }
+    
+    .board-coordinates.bottom div {
+        width: 40px;
+    }
+    
+    .board-coordinates.left,
+    .board-coordinates.right {
+        height: 320px;
+    }
+    
+    .board-coordinates.bottom {
+        width: 320px;
+    }
+}
+
+@media (max-width: 320px) {
+    .chess-board {
+        grid-template-columns: repeat(8, 35px);
+        grid-template-rows: repeat(8, 35px);
+    }
+    
+    .piece {
+        font-size: 20px;
+    }
+    
+    .square.valid-move::after {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .board-coordinates div {
+        height: 35px;
+        font-size: 8px;
+    }
+    
+    .board-coordinates.bottom div {
+        width: 35px;
+    }
+    
+    .board-coordinates.left,
+    .board-coordinates.right {
+        height: 280px;
+    }
+    
+    .board-coordinates.bottom {
+        width: 280px;
+    }
+}
+
+/* Mobile touch optimizations */
+@media (max-width: 768px) {
+    .square {
+        /* Improve touch responsiveness */
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    
+    .square:active {
+        transform: scale(0.95);
+    }
+    
+    /* Reduce animation for better mobile performance */
+    .piece {
+        transition: all 0.2s ease;
+    }
+    
+    .square.selected {
+        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.9);
+    }
+}
+
+/* Landscape mode adjustments for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .chess-board {
+        grid-template-columns: repeat(8, 50px);
+        grid-template-rows: repeat(8, 50px);
+    }
+    
+    .piece {
+        font-size: 30px;
+    }
+    
+    .board-coordinates div {
+        height: 50px;
+    }
+    
+    .board-coordinates.bottom div {
+        width: 50px;
+    }
+    
+    .board-coordinates.left,
+    .board-coordinates.right {
+        height: 400px;
+    }
+    
+    .board-coordinates.bottom {
+        width: 400px;
     }
 }
