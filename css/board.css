@@ -279,23 +279,6 @@
     .piece {
         font-size: 48px;
     }
-    
-    .board-coordinates div {
-        height: 75px;
-    }
-    
-    .board-coordinates.bottom div {
-        width: 75px;
-    }
-    
-    .board-coordinates.left,
-    .board-coordinates.right {
-        height: 600px;
-    }
-    
-    .board-coordinates.bottom {
-        width: 600px;
-    }
 }
 
 /* Responsive Design for Mobile */
@@ -308,23 +291,6 @@
     .piece {
         font-size: 46px;
     }
-    
-    .board-coordinates div {
-        height: 80px;
-    }
-    
-    .board-coordinates.bottom div {
-        width: 80px;
-    }
-    
-    .board-coordinates.left,
-    .board-coordinates.right {
-        height: 640px;
-    }
-    
-    .board-coordinates.bottom {
-        width: 640px;
-    }
 }
 
 @media (max-width: 1024px) {
@@ -335,23 +301,6 @@
     
     .piece {
         font-size: 40px;
-    }
-    
-    .board-coordinates div {
-        height: 70px;
-    }
-    
-    .board-coordinates.bottom div {
-        width: 70px;
-    }
-    
-    .board-coordinates.left,
-    .board-coordinates.right {
-        height: 560px;
-    }
-    
-    .board-coordinates.bottom {
-        width: 560px;
     }
 }
 
@@ -370,24 +319,6 @@
         width: 16px;
         height: 16px;
     }
-    
-    .board-coordinates div {
-        height: 60px;
-        font-size: 11px;
-    }
-    
-    .board-coordinates.bottom div {
-        width: 60px;
-    }
-    
-    .board-coordinates.left,
-    .board-coordinates.right {
-        height: 480px;
-    }
-    
-    .board-coordinates.bottom {
-        width: 480px;
-    }
 }
 
 @media (max-width: 600px) {
@@ -404,24 +335,6 @@
     .square.valid-move::after {
         width: 12px;
         height: 12px;
-    }
-    
-    .board-coordinates div {
-        height: 45px;
-        font-size: 10px;
-    }
-    
-    .board-coordinates.bottom div {
-        width: 45px;
-    }
-    
-    .board-coordinates.left,
-    .board-coordinates.right {
-        height: 360px;
-    }
-    
-    .board-coordinates.bottom {
-        width: 360px;
     }
 }
 
@@ -440,24 +353,6 @@
     .square.valid-move::after {
         width: 10px;
         height: 10px;
-    }
-    
-    .board-coordinates div {
-        height: 38px;
-        font-size: 9px;
-    }
-    
-    .board-coordinates.bottom div {
-        width: 38px;
-    }
-    
-    .board-coordinates.left,
-    .board-coordinates.right {
-        height: 304px;
-    }
-    
-    .board-coordinates.bottom {
-        width: 304px;
     }
 }
 

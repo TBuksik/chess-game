@@ -345,47 +345,15 @@ body {
 /* Board Container */
 .chess-board-container {
     position: relative;
-    display: grid;
-    grid-template-columns: 30px 1fr 30px;
-    gap: var(--space-sm);
-    align-items: center;
-}
-
-.board-coordinates {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 720px;
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    color: var(--text-secondary);
-}
-
-.board-coordinates.left,
-.board-coordinates.right {
-    height: 720px;
-}
-
-.board-coordinates.bottom {
-    flex-direction: row;
-    justify-content: space-between;
-    width: 720px;
-    height: auto;
-    margin-top: var(--space-sm);
-}
-
-.board-coordinates div {
-    display: flex;
     align-items: center;
-    justify-content: center;
-    height: 90px;
-    font-size: var(--font-size-sm);
-    font-weight: 600;
+    gap: var(--space-sm);
 }
 
-.board-coordinates.bottom div {
-    width: 90px;
-    height: 30px;
+/* Hide external coordinates - they're already on the board */
+.board-coordinates {
+    display: none;
 }
 
 .timer-value {
@@ -454,6 +422,34 @@ body {
     
     .desktop-only {
         display: none;
+    }
+    
+    .game-container {
+        flex-direction: column;
+        padding: 10px;
+        gap: 15px;
+        min-height: 100vh;
+        align-items: stretch;
+    }
+    
+    .opponent-player {
+        order: 1;
+        width: 100%;
+    }
+    
+    .main-game {
+        order: 2;
+        width: 100%;
+        min-width: auto;
+        height: auto;
+        padding: 15px;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
+    }
+    
+    .current-player {
+        order: 3;
+        width: 100%;
     }
 }
 
@@ -535,27 +531,38 @@ body {
     width: 100%;
     background: var(--bg-tertiary);
     border-radius: var(--radius-md);
-    padding: 8px;
-    margin-top: 10px;
+    padding: 8px 12px;
+    margin-top: 15px;
     border: 1px solid var(--border-color);
-    max-height: 80px;
+    max-height: 120px;
     overflow-y: auto;
 }
 
 .move-history-compact .move-list {
     font-family: 'Monaco', 'Menlo', monospace;
-    font-size: 11px;
-    line-height: 1.2;
+    font-size: 12px;
+    line-height: 1.4;
 }
 
 .move-history-compact .move-row {
-    padding: 2px 0;
+    padding: 3px 0;
     color: var(--text-primary);
     border-bottom: 1px solid var(--border-color);
 }
 
 .move-history-compact .move-row:last-child {
     border-bottom: none;
+}
+
+.move-history-compact::before {
+    content: "Move History";
+    display: block;
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    font-weight: 600;
 }
 
 @media (max-width: 1024px) {
