@@ -126,8 +126,16 @@ class ChessBoard {
         } else {
             // Select this square if it has a piece
             const piece = this.board[row][col];
-            if (piece && this.canSelectPiece(piece)) {
-                this.selectSquare(row, col);
+            if (piece) {
+                if (this.canSelectPiece(piece)) {
+                    this.selectSquare(row, col);
+                } else {
+                    // Show notification if trying to select wrong color's piece
+                    if (this.game && piece.color !== this.game.currentPlayer) {
+                        ChessUtils.showNotification(`It's ${this.game.currentPlayer}'s turn!`, 'warning');
+                    }
+                    this.clearSelection();
+                }
             } else {
                 this.clearSelection();
             }
@@ -147,6 +155,10 @@ class ChessBoard {
         
         if (!this.canSelectPiece(piece)) {
             event.preventDefault();
+            // Show notification if trying to drag wrong color's piece
+            if (this.game && piece && piece.color !== this.game.currentPlayer) {
+                ChessUtils.showNotification(`It's ${this.game.currentPlayer}'s turn!`, 'warning');
+            }
             return;
         }
         
@@ -299,7 +311,16 @@ class ChessBoard {
     canSelectPiece(piece) {
         if (!piece) return false;
         
-        // For now, allow selecting any piece (will be restricted by game logic)
+        // Check if game is in playing state
+        if (this.game && this.game.gameState !== 'playing') {
+            return false;
+        }
+        
+        // Check if it's the piece's color's turn
+        if (this.game && piece.color !== this.game.currentPlayer) {
+            return false;
+        }
+        
         return true;
     }
     
@@ -309,6 +330,13 @@ class ChessBoard {
     makeMove(fromRow, fromCol, toRow, toCol) {
         const piece = this.board[fromRow][fromCol];
         if (!piece) return false;
+        
+        // Check if it's the correct player's turn
+        if (this.game && !this.game.isValidTurn(piece)) {
+            ChessUtils.showNotification(`It's ${this.game.currentPlayer}'s turn!`, 'warning');
+            Animation.shake(this.getSquareElement(fromRow, fromCol));
+            return false;
+        }
         
         // Check if move is valid
         if (!MoveValidator.isValidMove(piece, toRow, toCol, this.board, {})) {
@@ -486,6 +514,16 @@ class ChessBoard {
         const square = e.target.closest('.square');
         const row = parseInt(square.dataset.row);
         const col = parseInt(square.dataset.col);
+        const piece = this.board[row][col];
+        
+        // Check if the piece can be selected (respects turn system)
+        if (piece && !this.canSelectPiece(piece)) {
+            // Show notification if trying to select wrong color's piece
+            if (this.game && piece.color !== this.game.currentPlayer) {
+                ChessUtils.showNotification(`It's ${this.game.currentPlayer}'s turn!`, 'warning');
+            }
+            return;
+        }
         
         this.touchData = {
             startSquare: { row, col },
@@ -541,7 +579,17 @@ class ChessBoard {
             const endCol = parseInt(endSquare.dataset.col);
             
             if (this.touchData.startSquare.row !== endRow || this.touchData.startSquare.col !== endCol) {
-                this.handleMove(this.touchData.startSquare, { row: endRow, col: endCol });
+                // Try to make the move
+                const startRow = this.touchData.startSquare.row;
+                const startCol = this.touchData.startSquare.col;
+                const piece = this.board[startRow][startCol];
+                
+                // Check if the piece can be moved (respects turn system)
+                if (piece && this.canSelectPiece(piece)) {
+                    this.makeMove(startRow, startCol, endRow, endCol);
+                } else if (piece && this.game && piece.color !== this.game.currentPlayer) {
+                    ChessUtils.showNotification(`It's ${this.game.currentPlayer}'s turn!`, 'warning');
+                }
             }
         } else if (touchDuration < 300 && !this.touchData.isDragging) {
             // Handle tap (short touch without dragging)

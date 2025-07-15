@@ -14,6 +14,9 @@ class ChessGame {
         this.timers = { white: Infinity, black: Infinity };
         this.isTimerActive = false;
         
+        // Give board a reference to the game for turn validation
+        this.board.game = this;
+        
         this.initializeGame();
         this.attachEventListeners();
     }
@@ -76,13 +79,6 @@ class ChessGame {
      */
     handleMove(event) {
         const { lastMove, board } = event.detail;
-        
-        if (!this.isValidTurn(lastMove.piece)) {
-            this.board.clearSelection();
-            Animation.shake(this.board.getSquareElement(lastMove.to[0], lastMove.to[1]));
-            ChessUtils.showNotification(`It's ${this.currentPlayer}'s turn!`, 'warning');
-            return;
-        }
         
         // Add move to history
         this.addMoveToHistory(lastMove);
