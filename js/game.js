@@ -206,10 +206,17 @@ class ChessGame {
             timeout: 'warning'
         };
         
+        // Set game state to ended to prevent further moves
+        this.gameState = reason;
+        
         ChessUtils.showNotification(messages[reason], messageTypes[reason] || 'info');
         
         // Disable further moves
         this.board.clearSelection();
+        
+        // Update UI to reflect game end
+        this.updateGameStatus();
+        this.updatePlayerUI();
         
         // Save game to history
         this.saveGameToHistory();

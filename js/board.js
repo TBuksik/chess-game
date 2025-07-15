@@ -130,8 +130,18 @@ class ChessBoard {
                 if (this.canSelectPiece(piece)) {
                     this.selectSquare(row, col);
                 } else {
-                    // Show notification if trying to select wrong color's piece
-                    if (this.game && piece.color !== this.game.currentPlayer) {
+                    // Show different notifications based on game state
+                    if (this.game && this.game.gameState !== 'playing') {
+                        const gameEndMessages = {
+                            'checkmate': 'Game over! Checkmate.',
+                            'stalemate': 'Game over! Stalemate.',
+                            'draw': 'Game over! Draw.'
+                        };
+                        ChessUtils.showNotification(
+                            gameEndMessages[this.game.gameState] || 'Game over!', 
+                            'warning'
+                        );
+                    } else if (this.game && piece.color !== this.game.currentPlayer) {
                         ChessUtils.showNotification(`It's ${this.game.currentPlayer}'s turn!`, 'warning');
                     }
                     this.clearSelection();
@@ -155,8 +165,18 @@ class ChessBoard {
         
         if (!this.canSelectPiece(piece)) {
             event.preventDefault();
-            // Show notification if trying to drag wrong color's piece
-            if (this.game && piece && piece.color !== this.game.currentPlayer) {
+            // Show different notifications based on game state
+            if (this.game && this.game.gameState !== 'playing') {
+                const gameEndMessages = {
+                    'checkmate': 'Game over! Checkmate.',
+                    'stalemate': 'Game over! Stalemate.',
+                    'draw': 'Game over! Draw.'
+                };
+                ChessUtils.showNotification(
+                    gameEndMessages[this.game.gameState] || 'Game over!', 
+                    'warning'
+                );
+            } else if (this.game && piece && piece.color !== this.game.currentPlayer) {
                 ChessUtils.showNotification(`It's ${this.game.currentPlayer}'s turn!`, 'warning');
             }
             return;
@@ -330,6 +350,21 @@ class ChessBoard {
     makeMove(fromRow, fromCol, toRow, toCol) {
         const piece = this.board[fromRow][fromCol];
         if (!piece) return false;
+        
+        // Check if game is over
+        if (this.game && this.game.gameState !== 'playing') {
+            const gameEndMessages = {
+                'checkmate': 'Game over! Checkmate.',
+                'stalemate': 'Game over! Stalemate.',
+                'draw': 'Game over! Draw.'
+            };
+            ChessUtils.showNotification(
+                gameEndMessages[this.game.gameState] || 'Game over!', 
+                'warning'
+            );
+            Animation.shake(this.getSquareElement(fromRow, fromCol));
+            return false;
+        }
         
         // Check if it's the correct player's turn
         if (this.game && !this.game.isValidTurn(piece)) {
@@ -518,8 +553,18 @@ class ChessBoard {
         
         // Check if the piece can be selected (respects turn system)
         if (piece && !this.canSelectPiece(piece)) {
-            // Show notification if trying to select wrong color's piece
-            if (this.game && piece.color !== this.game.currentPlayer) {
+            // Show different notifications based on game state
+            if (this.game && this.game.gameState !== 'playing') {
+                const gameEndMessages = {
+                    'checkmate': 'Game over! Checkmate.',
+                    'stalemate': 'Game over! Stalemate.',
+                    'draw': 'Game over! Draw.'
+                };
+                ChessUtils.showNotification(
+                    gameEndMessages[this.game.gameState] || 'Game over!', 
+                    'warning'
+                );
+            } else if (this.game && piece.color !== this.game.currentPlayer) {
                 ChessUtils.showNotification(`It's ${this.game.currentPlayer}'s turn!`, 'warning');
             }
             return;
@@ -587,6 +632,16 @@ class ChessBoard {
                 // Check if the piece can be moved (respects turn system)
                 if (piece && this.canSelectPiece(piece)) {
                     this.makeMove(startRow, startCol, endRow, endCol);
+                } else if (piece && this.game && this.game.gameState !== 'playing') {
+                    const gameEndMessages = {
+                        'checkmate': 'Game over! Checkmate.',
+                        'stalemate': 'Game over! Stalemate.',
+                        'draw': 'Game over! Draw.'
+                    };
+                    ChessUtils.showNotification(
+                        gameEndMessages[this.game.gameState] || 'Game over!', 
+                        'warning'
+                    );
                 } else if (piece && this.game && piece.color !== this.game.currentPlayer) {
                     ChessUtils.showNotification(`It's ${this.game.currentPlayer}'s turn!`, 'warning');
                 }
