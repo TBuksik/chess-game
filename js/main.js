@@ -38,6 +38,9 @@ class ChessApp {
             this.game = new ChessGame(boardElement);
             this.isInitialized = true;
             
+            // Make game instance globally accessible for overlay buttons
+            window.chessGame = this.game;
+            
             // Add keyboard shortcuts
             this.initializeKeyboardShortcuts();
             

@@ -150,6 +150,97 @@ function showNotification(message, type = 'info') {
 }
 
 /**
+ * Show a full-screen game end overlay
+ * @param {string} title - Main title message
+ * @param {string} subtitle - Subtitle message
+ * @param {string} result - Game result ('win', 'loss', 'draw')
+ */
+function showGameEndOverlay(title, subtitle, result) {
+    // Remove any existing overlay
+    const existingOverlay = document.querySelector('.game-end-overlay');
+    if (existingOverlay) {
+        existingOverlay.remove();
+    }
+    
+    // Create overlay container
+    const overlay = document.createElement('div');
+    overlay.className = 'game-end-overlay';
+    
+    // Create content container
+    const content = document.createElement('div');
+    content.className = 'game-end-content';
+    
+    // Create title
+    const titleElement = document.createElement('h1');
+    titleElement.className = `game-end-title ${result}`;
+    titleElement.textContent = title;
+    
+    // Create subtitle
+    const subtitleElement = document.createElement('p');
+    subtitleElement.className = 'game-end-subtitle';
+    subtitleElement.textContent = subtitle;
+    
+    // Create buttons container
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.className = 'game-end-buttons';
+    
+    // Create New Game button
+    const newGameBtn = document.createElement('button');
+    newGameBtn.className = 'game-end-btn primary';
+    newGameBtn.textContent = 'New Game';
+    newGameBtn.onclick = () => {
+        overlay.remove();
+        // Trigger new game
+        const gameInstance = window.chessGame || window.game;
+        if (gameInstance && gameInstance.newGame) {
+            gameInstance.newGame();
+        }
+    };
+    
+    // Create Close button
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'game-end-btn secondary';
+    closeBtn.textContent = 'Close';
+    closeBtn.onclick = () => {
+        overlay.remove();
+    };
+    
+    // Assemble the overlay
+    buttonsContainer.appendChild(newGameBtn);
+    buttonsContainer.appendChild(closeBtn);
+    
+    content.appendChild(titleElement);
+    content.appendChild(subtitleElement);
+    content.appendChild(buttonsContainer);
+    
+    overlay.appendChild(content);
+    
+    // Add to DOM
+    document.body.appendChild(overlay);
+    
+    // Animate in
+    requestAnimationFrame(() => {
+        overlay.classList.add('show');
+    });
+    
+    // Close on ESC key
+    const handleKeyDown = (e) => {
+        if (e.key === 'Escape') {
+            overlay.remove();
+            document.removeEventListener('keydown', handleKeyDown);
+        }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    
+    // Close on background click
+    overlay.onclick = (e) => {
+        if (e.target === overlay) {
+            overlay.remove();
+        }
+    };
+}
+
+/**
  * Debounce function to limit function calls
  * @param {function} func - Function to debounce
  * @param {number} wait - Wait time in milliseconds
@@ -316,6 +407,7 @@ window.ChessUtils = {
     formatTime,
     playSound,
     showNotification,
+    showGameEndOverlay,
     debounce,
     generateId,
     Storage,

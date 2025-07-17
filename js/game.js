@@ -190,26 +190,8 @@ class ChessGame {
      * End the game
      */
     endGame(reason) {
-        const messages = {
-            checkmate: `Checkmate! ${ChessUtils.getOppositeColor(this.currentPlayer)} wins!`,
-            stalemate: 'Stalemate! The game is a draw.',
-            insufficient_material: 'Draw by insufficient material.',
-            resignation: `${ChessUtils.getOppositeColor(this.currentPlayer)} wins by resignation.`,
-            timeout: `${ChessUtils.getOppositeColor(this.currentPlayer)} wins on time.`
-        };
-        
-        const messageTypes = {
-            checkmate: 'success',
-            stalemate: 'info',
-            insufficient_material: 'info',
-            resignation: 'info',
-            timeout: 'warning'
-        };
-        
         // Set game state to ended to prevent further moves
         this.gameState = reason;
-        
-        ChessUtils.showNotification(messages[reason], messageTypes[reason] || 'info');
         
         // Disable further moves
         this.board.clearSelection();
@@ -217,6 +199,47 @@ class ChessGame {
         // Update UI to reflect game end
         this.updateGameStatus();
         this.updatePlayerUI();
+        
+        // Determine winner and result type
+        let title, subtitle, result;
+        
+        switch (reason) {
+            case 'checkmate':
+                const winner = ChessUtils.getOppositeColor(this.currentPlayer);
+                title = winner === 'white' ? 'White Wins!' : 'Black Wins!';
+                subtitle = 'Checkmate! Game over.';
+                result = 'win'; // From winner's perspective
+                break;
+            case 'stalemate':
+                title = 'Stalemate';
+                subtitle = 'The game is a draw.';
+                result = 'draw';
+                break;
+            case 'insufficient_material':
+                title = 'Draw';
+                subtitle = 'Insufficient material to continue.';
+                result = 'draw';
+                break;
+            case 'resignation':
+                const resignationWinner = ChessUtils.getOppositeColor(this.currentPlayer);
+                title = resignationWinner === 'white' ? 'White Wins!' : 'Black Wins!';
+                subtitle = 'Win by resignation.';
+                result = 'win';
+                break;
+            case 'timeout':
+                const timeoutWinner = ChessUtils.getOppositeColor(this.currentPlayer);
+                title = timeoutWinner === 'white' ? 'White Wins!' : 'Black Wins!';
+                subtitle = 'Win on time.';
+                result = 'win';
+                break;
+            default:
+                title = 'Game Over';
+                subtitle = 'The game has ended.';
+                result = 'draw';
+        }
+        
+        // Show full-screen overlay
+        ChessUtils.showGameEndOverlay(title, subtitle, result);
         
         // Save game to history
         this.saveGameToHistory();
