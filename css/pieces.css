@@ -1,49 +1,34 @@
-/* Chess Pieces Unicode Symbols */
+/* Chess Pieces SVG Icons */
 .piece {
-    font-family: 'Segoe UI Symbol', 'DejaVu Sans', Arial, sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
     height: 100%;
-    font-size: 64px;
-    line-height: 1;
     user-select: none;
     transition: all var(--transition-fast);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 /* White Pieces */
-.piece.white.king::after { content: '♔'; }
-.piece.white.queen::after { content: '♕'; }
-.piece.white.rook::after { content: '♖'; }
-.piece.white.bishop::after { content: '♗'; }
-.piece.white.knight::after { content: '♘'; }
-.piece.white.pawn::after { content: '♙'; }
+.piece.white.king { background-image: url('../assets/pieces/white-king.svg'); }
+.piece.white.queen { background-image: url('../assets/pieces/white-queen.svg'); }
+.piece.white.rook { background-image: url('../assets/pieces/white-rook.svg'); }
+.piece.white.bishop { background-image: url('../assets/pieces/white-bishop.svg'); }
+.piece.white.knight { background-image: url('../assets/pieces/white-knight.svg'); }
+.piece.white.pawn { background-image: url('../assets/pieces/white-pawn.svg'); }
 
 /* Black Pieces */
-.piece.black.king::after { content: '♚'; }
-.piece.black.queen::after { content: '♛'; }
-.piece.black.rook::after { content: '♜'; }
-.piece.black.bishop::after { content: '♝'; }
-.piece.black.knight::after { content: '♞'; }
-.piece.black.pawn::after { content: '♟'; }
+.piece.black.king { background-image: url('../assets/pieces/black-king.svg'); }
+.piece.black.queen { background-image: url('../assets/pieces/black-queen.svg'); }
+.piece.black.rook { background-image: url('../assets/pieces/black-rook.svg'); }
+.piece.black.bishop { background-image: url('../assets/pieces/black-bishop.svg'); }
+.piece.black.knight { background-image: url('../assets/pieces/black-knight.svg'); }
+.piece.black.pawn { background-image: url('../assets/pieces/black-pawn.svg'); }
 
-/* Piece Colors and Effects */
-.piece.white::after {
-    color: #ffffff;
-    text-shadow: 
-        1px 1px 2px rgba(0, 0, 0, 0.8),
-        -1px -1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.piece.black::after {
-    color: #2d2d2d;
-    text-shadow: 
-        1px 1px 2px rgba(255, 255, 255, 0.3),
-        -1px -1px 2px rgba(0, 0, 0, 0.8);
-}
-
-/* Piece States */
+/* Piece Effects */
 .piece:hover {
     transform: scale(1.1);
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
@@ -181,11 +166,31 @@
 
 /* Captured Piece Display */
 .captured-piece {
-    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
     opacity: 0.8;
     margin: 2px;
     transition: all var(--transition-fast);
 }
+
+/* Captured Pieces - White */
+.captured-piece.white.king { background-image: url('../assets/pieces/white-king.svg'); }
+.captured-piece.white.queen { background-image: url('../assets/pieces/white-queen.svg'); }
+.captured-piece.white.rook { background-image: url('../assets/pieces/white-rook.svg'); }
+.captured-piece.white.bishop { background-image: url('../assets/pieces/white-bishop.svg'); }
+.captured-piece.white.knight { background-image: url('../assets/pieces/white-knight.svg'); }
+.captured-piece.white.pawn { background-image: url('../assets/pieces/white-pawn.svg'); }
+
+/* Captured Pieces - Black */
+.captured-piece.black.king { background-image: url('../assets/pieces/black-king.svg'); }
+.captured-piece.black.queen { background-image: url('../assets/pieces/black-queen.svg'); }
+.captured-piece.black.rook { background-image: url('../assets/pieces/black-rook.svg'); }
+.captured-piece.black.bishop { background-image: url('../assets/pieces/black-bishop.svg'); }
+.captured-piece.black.knight { background-image: url('../assets/pieces/black-knight.svg'); }
+.captured-piece.black.pawn { background-image: url('../assets/pieces/black-pawn.svg'); }
 
 .captured-piece:hover {
     opacity: 1;
