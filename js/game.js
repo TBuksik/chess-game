@@ -108,7 +108,9 @@ class ChessGame {
      * Check if it's a valid turn
      */
     isValidTurn(piece) {
-        return piece.color === this.currentPlayer && this.gameState === 'playing';
+        // Allow moves when game is playing or when in check (to allow escape moves)
+        return piece.color === this.currentPlayer && 
+               (this.gameState === 'playing' || this.gameState === 'check');
     }
     
     /**

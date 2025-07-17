@@ -131,7 +131,7 @@ class ChessBoard {
                     this.selectSquare(row, col);
                 } else {
                     // Show different notifications based on game state
-                    if (this.game && this.game.gameState !== 'playing') {
+                    if (this.game && this.game.gameState !== 'playing' && this.game.gameState !== 'check') {
                         const gameEndMessages = {
                             'checkmate': 'Game over! Checkmate.',
                             'stalemate': 'Game over! Stalemate.',
@@ -166,7 +166,7 @@ class ChessBoard {
         if (!this.canSelectPiece(piece)) {
             event.preventDefault();
             // Show different notifications based on game state
-            if (this.game && this.game.gameState !== 'playing') {
+            if (this.game && this.game.gameState !== 'playing' && this.game.gameState !== 'check') {
                 const gameEndMessages = {
                     'checkmate': 'Game over! Checkmate.',
                     'stalemate': 'Game over! Stalemate.',
@@ -331,8 +331,8 @@ class ChessBoard {
     canSelectPiece(piece) {
         if (!piece) return false;
         
-        // Check if game is in playing state
-        if (this.game && this.game.gameState !== 'playing') {
+        // Check if game is in playing state or check (allow moves to escape check)
+        if (this.game && this.game.gameState !== 'playing' && this.game.gameState !== 'check') {
             return false;
         }
         
@@ -351,8 +351,8 @@ class ChessBoard {
         const piece = this.board[fromRow][fromCol];
         if (!piece) return false;
         
-        // Check if game is over
-        if (this.game && this.game.gameState !== 'playing') {
+        // Check if game is over (but allow moves during check to escape)
+        if (this.game && this.game.gameState !== 'playing' && this.game.gameState !== 'check') {
             const gameEndMessages = {
                 'checkmate': 'Game over! Checkmate.',
                 'stalemate': 'Game over! Stalemate.',
@@ -554,7 +554,7 @@ class ChessBoard {
         // Check if the piece can be selected (respects turn system)
         if (piece && !this.canSelectPiece(piece)) {
             // Show different notifications based on game state
-            if (this.game && this.game.gameState !== 'playing') {
+            if (this.game && this.game.gameState !== 'playing' && this.game.gameState !== 'check') {
                 const gameEndMessages = {
                     'checkmate': 'Game over! Checkmate.',
                     'stalemate': 'Game over! Stalemate.',
@@ -632,7 +632,7 @@ class ChessBoard {
                 // Check if the piece can be moved (respects turn system)
                 if (piece && this.canSelectPiece(piece)) {
                     this.makeMove(startRow, startCol, endRow, endCol);
-                } else if (piece && this.game && this.game.gameState !== 'playing') {
+                } else if (piece && this.game && this.game.gameState !== 'playing' && this.game.gameState !== 'check') {
                     const gameEndMessages = {
                         'checkmate': 'Game over! Checkmate.',
                         'stalemate': 'Game over! Stalemate.',

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Check State Transitions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .pass {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .fail {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        #chess-board {
+            margin: 20px 0;
+        }
+    </style>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h1>Test Check State Transitions</h1>
+    <div id="test-results"></div>
+    <div id="chess-board"></div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/pieces.js"></script>
+    <script src="js/board.js"></script>
+    <script src="js/game.js"></script>
+    <script>
+        function runCheckTransitionTest() {
+            const resultsDiv = document.getElementById('test-results');
+            const boardElement = document.getElementById('chess-board');
+            
+            // Initialize game
+            const game = new ChessGame(boardElement);
+            
+            // Create a check scenario where the king can escape
+            const board = Array(8).fill().map(() => Array(8).fill(null));
+            
+            // Set up a check scenario: white king can escape by moving
+            board[4][4] = new ChessPiece('king', 'white', 4, 4);     // White king on e4
+            board[4][0] = new ChessPiece('rook', 'black', 4, 0);    // Black rook on a4 (giving check)
+            board[7][7] = new ChessPiece('king', 'black', 7, 7);    // Black king on h1
+            
+            // Set the board
+            game.board.setBoardState(board);
+            game.currentPlayer = 'white';
+            
+            // Check the initial game state
+            game.checkGameState();
+            const initialState = game.gameState;
+            
+            console.log('Initial game state:', initialState);
+            
+            // Test 1: Initial state should be 'check'
+            const test1 = initialState === 'check';
+            
+            // Simulate the king escaping check by moving to d4
+            const escapeMoveSuccess = game.board.makeMove(4, 4, 4, 3);
+            
+            // After the move, check the game state again
+            game.checkGameState();
+            const stateAfterEscape = game.gameState;
+            
+            console.log('Game state after escape move:', stateAfterEscape);
+            
+            // Test 2: After escape, state should be 'playing' 
+            const test2 = stateAfterEscape === 'playing';
+            
+            // Test 3: Verify that the escape move was successful
+            const test3 = escapeMoveSuccess;
+            
+            // Test 4: Verify king is no longer in check
+            const boardAfterMove = game.board.getBoardState();
+            const isStillInCheck = MoveValidator.isKingInCheck(boardAfterMove, 'white');
+            const test4 = !isStillInCheck;
+            
+            // Display results
+            resultsDiv.innerHTML = `
+                <div class="test-result ${test1 ? 'pass' : 'fail'}">
+                    <strong>Test 1 - Initial state is 'check':</strong> ${test1 ? 'PASS' : 'FAIL'}<br>
+                    Initial state: ${initialState}
+                </div>
+                <div class="test-result ${test3 ? 'pass' : 'fail'}">
+                    <strong>Test 2 - Escape move was successful:</strong> ${test3 ? 'PASS' : 'FAIL'}
+                </div>
+                <div class="test-result ${test4 ? 'pass' : 'fail'}">
+                    <strong>Test 3 - King is no longer in check:</strong> ${test4 ? 'PASS' : 'FAIL'}
+                </div>
+                <div class="test-result ${test2 ? 'pass' : 'fail'}">
+                    <strong>Test 4 - State after escape is 'playing':</strong> ${test2 ? 'PASS' : 'FAIL'}<br>
+                    State after escape: ${stateAfterEscape}
+                </div>
+                <div class="test-result ${test1 && test2 && test3 && test4 ? 'pass' : 'fail'}">
+                    <strong>Overall Check Transition:</strong> ${test1 && test2 && test3 && test4 ? 'WORKING CORRECTLY' : 'NEEDS ATTENTION'}
+                </div>
+            `;
+            
+            console.log('Test results:', {
+                initialState,
+                escapeMoveSuccess,
+                stateAfterEscape,
+                isStillInCheck
+            });
+        }
+        
+        // Run test when page loads
+        window.onload = runCheckTransitionTest;
+    </script>
+</body>
+</html>
