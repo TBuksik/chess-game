@@ -200,6 +200,7 @@
             
             static isCheckmate(board, color) {
                 if (!this.isKingInCheck(board, color)) {
+                    console.log('Not in check, so not checkmate');
                     return false;
                 }
                 
@@ -209,16 +210,21 @@
                         const piece = board[row][col];
                         if (piece && piece.color === color) {
                             const moves = piece.getValidMoves(board);
+                            console.log(`Checking piece ${piece.type} at (${row},${col}), moves:`, moves);
                             for (let [toRow, toCol] of moves) {
-                                if (this.isValidMove(piece, toRow, toCol, board, {})) {
-                                    return false;
+                                // Simulate the move and check if king is still in check
+                                const testBoard = this.simulateMove(board, row, col, toRow, toCol);
+                                if (!this.isKingInCheck(testBoard, color)) {
+                                    console.log(`Found valid escape move: ${piece.type} from (${row},${col}) to (${toRow},${toCol})`);
+                                    return false; // Found a move that gets out of check
                                 }
                             }
                         }
                     }
                 }
                 
-                return true;
+                console.log('Checkmate result: true (no escape moves found)');
+                return true; // No moves can get out of check, it's checkmate
             }
         }
         
@@ -226,20 +232,44 @@
         function runTests() {
             const resultsDiv = document.getElementById('test-results');
             
-            // Test 1: Basic checkmate scenario (Scholar's Mate)
+            // Test 1: Proper checkmate scenario
             function testBasicCheckmate() {
-                // Create a simple checkmate position
+                console.log('=== TESTING BASIC CHECKMATE ===');
+                
+                // Create a very simple checkmate position
                 const board = Array(8).fill().map(() => Array(8).fill(null));
                 
-                // Place pieces for a basic checkmate scenario
-                board[0][4] = new MockChessPiece('king', 'black', 0, 4);  // Black king on e8
-                board[1][3] = new MockChessPiece('queen', 'white', 1, 3); // White queen on d7
-                board[7][4] = new MockChessPiece('king', 'white', 7, 4);  // White king on e1
+                // Set up a simple mate: Black king in corner, white queen and king
+                board[0][0] = new MockChessPiece('king', 'black', 0, 0);     // Black king on a8
+                board[1][1] = new MockChessPiece('queen', 'white', 1, 1);   // White queen on b7
+                board[2][1] = new MockChessPiece('king', 'white', 2, 1);    // White king on b6
                 
-                // This should be checkmate for black
+                console.log('Board setup:');
+                console.log('- Black king at (0,0) - a8');
+                console.log('- White queen at (1,1) - b7');
+                console.log('- White king at (2,1) - b6');
+                
+                // Check if black king is in check
                 const isInCheck = MockMoveValidator.isKingInCheck(board, 'black');
-                const isCheckmate = MockMoveValidator.isCheckmate(board, 'black');
+                console.log('Is black king in check?', isInCheck);
                 
+                // Check if it's checkmate
+                const isCheckmate = MockMoveValidator.isCheckmate(board, 'black');
+                console.log('Is it checkmate?', isCheckmate);
+                
+                // Debug king moves
+                const blackKing = board[0][0];
+                const kingMoves = blackKing.getValidMoves(board);
+                console.log('Black king possible moves:', kingMoves);
+                
+                // Check each move
+                for (let [toRow, toCol] of kingMoves) {
+                    const testBoard = MockMoveValidator.simulateMove(board, 0, 0, toRow, toCol);
+                    const stillInCheck = MockMoveValidator.isKingInCheck(testBoard, 'black');
+                    console.log(`King move to (${toRow},${toCol}): still in check = ${stillInCheck}`);
+                }
+                
+                console.log('=== END BASIC CHECKMATE TEST ===');
                 return isInCheck && isCheckmate;
             }
             
@@ -248,15 +278,32 @@
                 const board = Array(8).fill().map(() => Array(8).fill(null));
                 
                 // Place pieces where king is in check but can escape
-                board[0][4] = new MockChessPiece('king', 'black', 0, 4);  // Black king on e8
-                board[1][4] = new MockChessPiece('queen', 'white', 1, 4); // White queen on e7
-                board[7][4] = new MockChessPiece('king', 'white', 7, 4);  // White king on e1
+                board[0][4] = new MockChessPiece('king', 'black', 0, 4);     // Black king on e8
+                board[1][3] = new MockChessPiece('queen', 'white', 1, 3);   // White queen on d7 (giving check)
+                board[7][4] = new MockChessPiece('king', 'white', 7, 4);    // White king on e1
                 
                 // King should be in check but not checkmate (can move to d8, f8, etc.)
                 const isInCheck = MockMoveValidator.isKingInCheck(board, 'black');
                 const isCheckmate = MockMoveValidator.isCheckmate(board, 'black');
                 
-                return isInCheck && !isCheckmate;
+                console.log('Not checkmate test:', { isInCheck, isCheckmate });
+                console.log('Black king should be in check but have escape squares');
+                
+                // Test king moves manually
+                const kingMoves = board[0][4].getValidMoves(board);
+                console.log('Black king possible moves:', kingMoves);
+                
+                let safeMovesCount = 0;
+                for (let [toRow, toCol] of kingMoves) {
+                    const testBoard = MockMoveValidator.simulateMove(board, 0, 4, toRow, toCol);
+                    const stillInCheck = MockMoveValidator.isKingInCheck(testBoard, 'black');
+                    console.log(`King move to (${toRow},${toCol}): still in check = ${stillInCheck}`);
+                    if (!stillInCheck) safeMovesCount++;
+                }
+                
+                console.log(`Safe moves available: ${safeMovesCount}`);
+                
+                return isInCheck && !isCheckmate && safeMovesCount > 0;
             }
             
             // Test 3: Game state handling

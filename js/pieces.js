@@ -381,16 +381,17 @@ class MoveValidator {
                 if (piece && piece.color === color) {
                     const moves = piece.getValidMoves(board);
                     for (let [toRow, toCol] of moves) {
+                        // Simulate the move and check if king is still in check
                         const testBoard = this.simulateMove(board, row, col, toRow, toCol);
                         if (!this.isKingInCheck(testBoard, color)) {
-                            return false;
+                            return false; // Found a move that gets out of check
                         }
                     }
                 }
             }
         }
         
-        return true;
+        return true; // No moves can get out of check, it's checkmate
     }
     
     /**

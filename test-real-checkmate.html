@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Checkmate Test - Real Game</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Chess Checkmate Test</h1>
+        <div id="test-output"></div>
+        <div id="chess-board"></div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/pieces.js"></script>
+    <script src="js/game.js"></script>
+    <script>
+        // Initialize the chess game
+        const game = new ChessGame();
+        
+        // Function to test checkmate detection
+        function testCheckmate() {
+            console.log('Testing checkmate detection with real game...');
+            
+            // Create a simple checkmate scenario
+            const board = Array(8).fill().map(() => Array(8).fill(null));
+            
+            // Set up Scholar's mate position
+            board[7][4] = new ChessPiece('king', 'white', 7, 4);     // White king on e1
+            board[6][5] = new ChessPiece('pawn', 'white', 6, 5);    // White pawn on f2
+            board[5][6] = new ChessPiece('pawn', 'white', 5, 6);    // White pawn on g3
+            board[0][4] = new ChessPiece('king', 'black', 0, 4);     // Black king on e8
+            board[3][7] = new ChessPiece('queen', 'black', 3, 7);    // Black queen on h5
+            
+            // Set the board in the game
+            game.board = board;
+            
+            console.log('Board setup:');
+            console.log('- White king at e1');
+            console.log('- White pawn at f2');
+            console.log('- White pawn at g3');
+            console.log('- Black king at e8');
+            console.log('- Black queen at h5');
+            
+            // Test if white king is in check
+            const isInCheck = MoveValidator.isKingInCheck(board, 'white');
+            console.log('Is white king in check?', isInCheck);
+            
+            // Test if it's checkmate
+            const isCheckmate = MoveValidator.isCheckmate(board, 'white');
+            console.log('Is it checkmate?', isCheckmate);
+            
+            // Test alternative scenario: Simple back-rank mate
+            const board2 = Array(8).fill().map(() => Array(8).fill(null));
+            board2[0][4] = new ChessPiece('king', 'black', 0, 4);     // Black king on e8
+            board2[1][3] = new ChessPiece('pawn', 'black', 1, 3);    // Black pawn on d7
+            board2[1][4] = new ChessPiece('pawn', 'black', 1, 4);    // Black pawn on e7
+            board2[1][5] = new ChessPiece('pawn', 'black', 1, 5);    // Black pawn on f7
+            board2[0][0] = new ChessPiece('rook', 'white', 0, 0);    // White rook on a8
+            board2[7][4] = new ChessPiece('king', 'white', 7, 4);    // White king on e1
+            
+            console.log('\nTesting second scenario (back-rank mate):');
+            const isInCheck2 = MoveValidator.isKingInCheck(board2, 'black');
+            const isCheckmate2 = MoveValidator.isCheckmate(board2, 'black');
+            console.log('Is black king in check?', isInCheck2);
+            console.log('Is it checkmate?', isCheckmate2);
+            
+            // Update the display
+            const output = document.getElementById('test-output');
+            output.innerHTML = `
+                <div class="test-result ${isInCheck && isCheckmate ? 'pass' : 'fail'}">
+                    <strong>Test 1 - Scholar's mate:</strong><br>
+                    Is in check: ${isInCheck}<br>
+                    Is checkmate: ${isCheckmate}<br>
+                    Result: ${isInCheck && isCheckmate ? 'PASS' : 'FAIL'}
+                </div>
+                <div class="test-result ${isInCheck2 && isCheckmate2 ? 'pass' : 'fail'}">
+                    <strong>Test 2 - Back-rank mate:</strong><br>
+                    Is in check: ${isInCheck2}<br>
+                    Is checkmate: ${isCheckmate2}<br>
+                    Result: ${isInCheck2 && isCheckmate2 ? 'PASS' : 'FAIL'}
+                </div>
+            `;
+            
+            return {
+                test1: isInCheck && isCheckmate,
+                test2: isInCheck2 && isCheckmate2
+            };
+        }
+        
+        // Run the test when page loads
+        window.onload = function() {
+            testCheckmate();
+        };
+    </script>
+</body>
+</html>
