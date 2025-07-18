@@ -1040,3 +1040,227 @@ body {
         background: rgba(0, 0, 0, 0.9);
     }
 }
+
+/* Game Mode Selection Menu */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.5s ease;
+}
+
+.menu-container {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 40px var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.menu-header {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+}
+
+.menu-title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.menu-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+.menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+}
+
+.menu-option {
+    display: flex;
+    align-items: center;
+    padding: var(--space-lg);
+    background: var(--bg-tertiary);
+    border: 2px solid transparent;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-option:not(:disabled):hover {
+    border-color: var(--accent-primary);
+    background: var(--bg-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(51, 161, 204, 0.2);
+}
+
+.menu-option:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.menu-option:disabled:hover {
+    transform: none;
+    border-color: transparent;
+    background: var(--bg-tertiary);
+    box-shadow: none;
+}
+
+.option-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--accent-primary);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: var(--space-lg);
+    flex-shrink: 0;
+}
+
+.option-icon img {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) invert(1);
+}
+
+.option-content {
+    flex: 1;
+    position: relative;
+}
+
+.option-content h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.option-content p {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.coming-soon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--accent-danger);
+    color: white;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.menu-footer {
+    text-align: center;
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--border-color);
+}
+
+.menu-info {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Menu animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.menu-overlay.fade-out {
+    animation: fadeOut 0.3s ease forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+}
+
+/* Mobile responsiveness for menu */
+@media (max-width: 768px) {
+    .menu-container {
+        padding: var(--space-lg);
+        margin: var(--space-md);
+    }
+    
+    .menu-title {
+        font-size: var(--font-size-xl);
+    }
+    
+    .option-icon {
+        width: 40px;
+        height: 40px;
+        margin-right: var(--space-md);
+    }
+    
+    .option-icon img {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .menu-option {
+        padding: var(--space-md);
+    }
+    
+    .option-content h3 {
+        font-size: var(--font-size-base);
+    }
+}
+
+@media (max-width: 480px) {
+    .menu-options {
+        gap: var(--space-sm);
+    }
+    
+    .menu-option {
+        padding: var(--space-sm) var(--space-md);
+    }
+    
+    .option-icon {
+        width: 36px;
+        height: 36px;
+        margin-right: var(--space-sm);
+    }
+    
+    .option-icon img {
+        width: 18px;
+        height: 18px;
+    }
+}

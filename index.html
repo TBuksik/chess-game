@@ -12,7 +12,66 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="game-container">
+    <!-- Game Mode Selection Menu -->
+    <div class="menu-overlay" id="menu-overlay">
+        <div class="menu-container">
+            <div class="menu-header">
+                <h1 class="menu-title">Chess Game</h1>
+                <p class="menu-subtitle">Choose your game mode</p>
+            </div>
+            
+            <div class="menu-options">
+                <button class="menu-option" id="local-1v1" data-mode="local">
+                    <div class="option-icon">
+                        <img src="assets/icons/user.svg" alt="Local Game" />
+                    </div>
+                    <div class="option-content">
+                        <h3>Local 1v1</h3>
+                        <p>Play against a friend on the same device</p>
+                    </div>
+                </button>
+                
+                <button class="menu-option" id="easy-bot" data-mode="easy" disabled>
+                    <div class="option-icon">
+                        <img src="assets/icons/stats.svg" alt="Easy Bot" />
+                    </div>
+                    <div class="option-content">
+                        <h3>Easy Bot</h3>
+                        <p>Perfect for beginners</p>
+                        <span class="coming-soon">Coming Soon</span>
+                    </div>
+                </button>
+                
+                <button class="menu-option" id="medium-bot" data-mode="medium" disabled>
+                    <div class="option-icon">
+                        <img src="assets/icons/trophy.svg" alt="Medium Bot" />
+                    </div>
+                    <div class="option-content">
+                        <h3>Medium Bot</h3>
+                        <p>For intermediate players</p>
+                        <span class="coming-soon">Coming Soon</span>
+                    </div>
+                </button>
+                
+                <button class="menu-option" id="hard-bot" data-mode="hard" disabled>
+                    <div class="option-icon">
+                        <img src="assets/icons/knight.svg" alt="Hard Bot" />
+                    </div>
+                    <div class="option-content">
+                        <h3>Hard Bot</h3>
+                        <p>Challenge for experienced players</p>
+                        <span class="coming-soon">Coming Soon</span>
+                    </div>
+                </button>
+            </div>
+            
+            <div class="menu-footer">
+                <p class="menu-info">Select a game mode to start playing</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-container" id="game-container" style="display: none;">
         <!-- Opponent Player (Top on Mobile) -->
         <div class="opponent-player mobile-only">
             <div class="player-info">

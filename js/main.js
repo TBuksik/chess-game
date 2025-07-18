@@ -7,6 +7,7 @@ class ChessApp {
     constructor() {
         this.game = null;
         this.isInitialized = false;
+        this.gameMode = null;
         
         this.init();
     }
@@ -17,10 +18,182 @@ class ChessApp {
     init() {
         // Wait for DOM to be ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.initializeGame());
+            document.addEventListener('DOMContentLoaded', () => this.initializeMenu());
         } else {
-            this.initializeGame();
+            this.initializeMenu();
         }
+    }
+    
+    /**
+     * Initialize the game mode selection menu
+     */
+    initializeMenu() {
+        try {
+            // Show the menu overlay
+            const menuOverlay = document.getElementById('menu-overlay');
+            const gameContainer = document.getElementById('game-container');
+            
+            if (!menuOverlay || !gameContainer) {
+                throw new Error('Menu or game container elements not found');
+            }
+            
+            // Hide game container initially
+            gameContainer.style.display = 'none';
+            
+            // Add event listeners for menu options
+            this.initializeMenuListeners();
+            
+            console.log('Menu initialized successfully');
+            
+        } catch (error) {
+            console.error('Failed to initialize menu:', error);
+            this.showErrorMessage('Failed to initialize the game menu. Please refresh the page.');
+        }
+    }
+    
+    /**
+     * Initialize menu event listeners
+     */
+    initializeMenuListeners() {
+        const menuOptions = document.querySelectorAll('.menu-option:not(:disabled)');
+        
+        menuOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                const gameMode = e.currentTarget.getAttribute('data-mode');
+                this.selectGameMode(gameMode);
+            });
+            
+            // Add hover effects
+            option.addEventListener('mouseenter', () => {
+                if (!option.disabled) {
+                    option.style.transform = 'translateY(-2px)';
+                }
+            });
+            
+            option.addEventListener('mouseleave', () => {
+                if (!option.disabled) {
+                    option.style.transform = 'translateY(0)';
+                }
+            });
+        });
+        
+        // Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('menu-overlay').style.display !== 'none') {
+                this.handleMenuKeyboard(e);
+            }
+        });
+    }
+    
+    /**
+     * Handle keyboard navigation in menu
+     */
+    handleMenuKeyboard(event) {
+        const enabledOptions = document.querySelectorAll('.menu-option:not(:disabled)');
+        const currentFocus = document.activeElement;
+        let currentIndex = -1;
+        
+        // Find current focused option
+        enabledOptions.forEach((option, index) => {
+            if (option === currentFocus) {
+                currentIndex = index;
+            }
+        });
+        
+        switch (event.key) {
+            case 'ArrowDown':
+                event.preventDefault();
+                const nextIndex = (currentIndex + 1) % enabledOptions.length;
+                enabledOptions[nextIndex].focus();
+                break;
+                
+            case 'ArrowUp':
+                event.preventDefault();
+                const prevIndex = currentIndex <= 0 ? enabledOptions.length - 1 : currentIndex - 1;
+                enabledOptions[prevIndex].focus();
+                break;
+                
+            case 'Enter':
+            case ' ':
+                event.preventDefault();
+                if (currentFocus && currentFocus.classList.contains('menu-option')) {
+                    currentFocus.click();
+                }
+                break;
+                
+            case '1':
+                event.preventDefault();
+                this.selectGameMode('local');
+                break;
+        }
+    }
+    
+    /**
+     * Select a game mode and start the game
+     */
+    selectGameMode(mode) {
+        this.gameMode = mode;
+        
+        // Add visual feedback
+        const selectedOption = document.querySelector(`[data-mode="${mode}"]`);
+        if (selectedOption) {
+            selectedOption.style.background = 'var(--accent-primary)';
+            selectedOption.style.transform = 'scale(0.98)';
+        }
+        
+        // Hide menu with animation
+        setTimeout(() => {
+            this.hideMenuAndStartGame();
+        }, 200);
+    }
+    
+    /**
+     * Hide menu and start the game
+     */
+    hideMenuAndStartGame() {
+        const menuOverlay = document.getElementById('menu-overlay');
+        const gameContainer = document.getElementById('game-container');
+        
+        // Add fade out animation
+        menuOverlay.classList.add('fade-out');
+        
+        setTimeout(() => {
+            menuOverlay.style.display = 'none';
+            gameContainer.style.display = 'grid';
+            
+            // Now initialize the actual chess game
+            this.initializeGame();
+            
+            // Show game mode notification
+            setTimeout(() => {
+                const modeText = this.gameMode === 'local' ? 'Local 1v1' : `${this.gameMode} Bot`;
+                ChessUtils.showNotification(`Starting ${modeText} game! White moves first.`, 'info');
+            }, 500);
+            
+        }, 300);
+    }
+    
+    /**
+     * Show the menu again (for new game)
+     */
+    showMenu() {
+        const menuOverlay = document.getElementById('menu-overlay');
+        const gameContainer = document.getElementById('game-container');
+        
+        gameContainer.style.display = 'none';
+        menuOverlay.style.display = 'flex';
+        menuOverlay.classList.remove('fade-out');
+        
+        // Reset game state
+        this.game = null;
+        this.isInitialized = false;
+        this.gameMode = null;
+        
+        // Reset menu option styles
+        document.querySelectorAll('.menu-option').forEach(option => {
+            option.style.background = '';
+            option.style.transform = '';
+        });
     }
     
     /**
@@ -34,8 +207,8 @@ class ChessApp {
                 throw new Error('Chess board element not found');
             }
             
-            // Create the chess game
-            this.game = new ChessGame(boardElement);
+            // Create the chess game with selected mode
+            this.game = new ChessGame(boardElement, this.gameMode);
             this.isInitialized = true;
             
             // Make game instance globally accessible for overlay buttons
@@ -50,10 +223,7 @@ class ChessApp {
             // Add theme handling
             this.initializeThemeHandling();
             
-            // Show welcome message
-            this.showWelcomeMessage();
-            
-            console.log('Chess game initialized successfully');
+            console.log(`Chess game initialized successfully in ${this.gameMode} mode`);
             
         } catch (error) {
             console.error('Failed to initialize chess game:', error);
@@ -71,11 +241,16 @@ class ChessApp {
                 return;
             }
             
+            // If game is not initialized, let menu handle keyboard events
+            if (!this.isInitialized) {
+                return;
+            }
+            
             switch (event.key.toLowerCase()) {
                 case 'n':
                     if (event.ctrlKey || event.metaKey) {
                         event.preventDefault();
-                        this.game.newGame();
+                        this.newGame();
                     }
                     break;
                     
@@ -98,10 +273,26 @@ class ChessApp {
                     
                 case 'escape':
                     event.preventDefault();
-                    this.game.board.clearSelection();
+                    if (this.game && this.game.board) {
+                        this.game.board.clearSelection();
+                    }
+                    break;
+                    
+                case 'm':
+                    event.preventDefault();
+                    this.showMenu();
                     break;
             }
         });
+    }
+    
+    /**
+     * Start a new game (returns to menu)
+     */
+    newGame() {
+        if (confirm('Are you sure you want to start a new game? Current progress will be lost.')) {
+            this.showMenu();
+        }
     }
     
     /**
@@ -165,15 +356,6 @@ class ChessApp {
     }
     
     /**
-     * Show welcome message
-     */
-    showWelcomeMessage() {
-        setTimeout(() => {
-            ChessUtils.showNotification('Welcome to Chess! White moves first.', 'info');
-        }, 1000);
-    }
-    
-    /**
      * Show error message
      */
     showErrorMessage(message) {
@@ -209,6 +391,7 @@ class ChessApp {
     getState() {
         return {
             isInitialized: this.isInitialized,
+            gameMode: this.gameMode,
             gameState: this.game ? this.game.getGameState() : null
         };
     }
@@ -427,6 +610,19 @@ window.addEventListener('beforeunload', (event) => {
         }
     }
 });
+
+// Global menu functions for easy access
+window.showGameMenu = () => {
+    if (chessApp) {
+        chessApp.showMenu();
+    }
+};
+
+window.startLocalGame = () => {
+    if (chessApp) {
+        chessApp.selectGameMode('local');
+    }
+};
 
 // Service Worker registration (for future PWA features)
 if ('serviceWorker' in navigator) {
