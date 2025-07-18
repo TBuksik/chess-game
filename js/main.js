@@ -129,7 +129,7 @@ class ChessApp {
     }
     
     /**
-     * Select a game mode and start the game
+     * Select a game mode and redirect to game page
      */
     selectGameMode(mode) {
         this.gameMode = mode;
@@ -141,9 +141,9 @@ class ChessApp {
             selectedOption.style.transform = 'scale(0.98)';
         }
         
-        // Hide menu with animation
+        // Redirect to game page with selected mode
         setTimeout(() => {
-            this.hideMenuAndStartGame();
+            window.location.href = `game.html?mode=${mode}`;
         }, 200);
     }
     
