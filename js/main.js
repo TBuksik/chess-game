@@ -159,7 +159,7 @@ class ChessApp {
         
         setTimeout(() => {
             menuOverlay.style.display = 'none';
-            gameContainer.style.display = 'grid';
+            gameContainer.style.display = 'flex';
             
             // Now initialize the actual chess game
             this.initializeGame();
