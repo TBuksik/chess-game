@@ -288,6 +288,32 @@ body {
     margin-bottom: var(--space-sm);
 }
 
+.stat-icon img {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) saturate(100%) invert(1);
+}
+
+.stat-item:hover .stat-icon img {
+    filter: brightness(0) saturate(100%) invert(0.3);
+}
+
+.stat-item.active .stat-icon img {
+    filter: brightness(0) saturate(100%) invert(0);
+}
+
+.timer-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timer-icon img {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) saturate(100%) invert(0.6);
+}
+
 .stat-label {
     font-size: var(--font-size-sm);
     font-weight: 500;
