@@ -1264,3 +1264,57 @@ body {
         height: 18px;
     }
 }
+
+/* Back to Menu Button */
+.back-to-menu-btn {
+    position: fixed;
+    top: var(--space-lg);
+    left: var(--space-lg);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    transition: all var(--transition-fast);
+    z-index: 100;
+    min-width: auto;
+    width: auto;
+    height: auto;
+}
+
+.back-to-menu-btn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent-primary);
+    transform: translateY(-1px);
+}
+
+.back-to-menu-btn:active {
+    transform: translateY(0);
+}
+
+.back-to-menu-btn img {
+    width: 16px;
+    height: 16px;
+    opacity: 0.8;
+}
+
+/* Mobile adjustments for back button */
+@media (max-width: 768px) {
+    .back-to-menu-btn {
+        top: var(--space-sm);
+        left: var(--space-sm);
+        padding: var(--space-xs) var(--space-sm);
+        font-size: var(--font-size-xs);
+    }
+    
+    .back-to-menu-btn img {
+        width: 14px;
+        height: 14px;
+    }
+}
