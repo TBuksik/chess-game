@@ -1325,24 +1325,13 @@ body {
 /* Mobile adjustments for back button */
 @media (max-width: 768px) {
     .back-to-menu-btn {
-        position: fixed;
-        bottom: var(--space-md);
-        left: var(--space-sm);
-        top: auto;
-        padding: var(--space-xs) var(--space-sm);
-        font-size: var(--font-size-xs);
-        z-index: 200;
-    }
-    
-    .back-to-menu-btn img {
-        width: 14px;
-        height: 14px;
+        display: none; /* Hide standalone back button on mobile */
     }
     
     /* Mobile stats grid integrated in current player */
     .stats-grid-mobile {
-        display: flex;
-        justify-content: space-around;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
         gap: var(--space-sm);
         margin-top: var(--space-sm);
         padding-top: var(--space-sm);
@@ -1359,11 +1348,12 @@ body {
         border: none;
         cursor: pointer;
         transition: var(--transition-fast);
+        border-radius: var(--radius-sm);
     }
     
     .stats-grid-mobile .stat-item:hover {
         background: rgba(255, 255, 255, 0.1);
-        border-radius: var(--radius-sm);
+        transform: scale(1.05);
     }
     
     .stats-grid-mobile .stat-icon img {
