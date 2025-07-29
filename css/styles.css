@@ -77,20 +77,21 @@ body {
         flex: 1;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        justify-content: flex-start; /* Start from top instead of center */
+        align-items: stretch; /* Stretch to full width */
         min-height: 0; /* Allow flex item to shrink */
         overflow: hidden; /* Prevent content from overflowing */
-        /* padding: 2px; */
+        padding: 0; /* Remove all padding */
     }
     
     .chess-board-container {
         width: 100%;
-        height: fit-content;
-        /* display: flex;
+        height: 100%; /* Take full height of main-game */
+        display: flex;
         justify-content: center;
-        align-items: center; */
+        align-items: flex-start; /* Align to top */
         overflow: hidden; /* Ensure board stays within bounds */
+        padding: 0; /* Remove padding to eliminate top space */
     }
 }
 
