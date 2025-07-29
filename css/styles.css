@@ -80,6 +80,7 @@ body {
         justify-content: center;
         align-items: center;
         min-height: 0; /* Allow flex item to shrink */
+        overflow: hidden; /* Prevent content from overflowing */
     }
     
     .chess-board-container {
@@ -88,6 +89,8 @@ body {
         display: flex;
         justify-content: center;
         align-items: center;
+        overflow: hidden; /* Ensure board stays within bounds */
+        padding: 4px; /* Small padding to prevent edge clipping */
     }
 }
 
