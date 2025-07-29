@@ -306,53 +306,71 @@
 
 @media (max-width: 768px) {
     .chess-board {
-        grid-template-columns: repeat(8, 60px);
-        grid-template-rows: repeat(8, 60px);
+        /* Calculate size based on available viewport space */
+        --board-size: min(calc(100vw - 20px), calc(100vh - 200px));
+        --square-size: calc(var(--board-size) / 8);
+        
+        grid-template-columns: repeat(8, var(--square-size));
+        grid-template-rows: repeat(8, var(--square-size));
         border-width: 2px;
+        width: var(--board-size);
+        height: var(--board-size);
+        max-width: 90vw;
+        max-height: calc(100vh - 200px);
     }
     
     .piece {
-        font-size: 36px;
+        font-size: clamp(20px, calc(var(--square-size) * 0.6), 36px);
     }
     
     .square.valid-move::after {
-        width: 16px;
-        height: 16px;
+        width: clamp(8px, calc(var(--square-size) * 0.25), 18px);
+        height: clamp(8px, calc(var(--square-size) * 0.25), 18px);
     }
 }
 
 @media (max-width: 600px) {
     .chess-board {
-        grid-template-columns: repeat(8, 45px);
-        grid-template-rows: repeat(8, 45px);
+        --board-size: min(calc(100vw - 16px), calc(100vh - 180px));
+        --square-size: calc(var(--board-size) / 8);
+        
+        grid-template-columns: repeat(8, var(--square-size));
+        grid-template-rows: repeat(8, var(--square-size));
+        width: var(--board-size);
+        height: var(--board-size);
         margin: 0 auto;
     }
     
     .piece {
-        font-size: 26px;
+        font-size: clamp(18px, calc(var(--square-size) * 0.58), 32px);
     }
     
     .square.valid-move::after {
-        width: 12px;
-        height: 12px;
+        width: clamp(6px, calc(var(--square-size) * 0.22), 16px);
+        height: clamp(6px, calc(var(--square-size) * 0.22), 16px);
     }
 }
 
 @media (max-width: 480px) {
     .chess-board {
-        grid-template-columns: repeat(8, 38px);
-        grid-template-rows: repeat(8, 38px);
+        --board-size: min(calc(100vw - 12px), calc(100vh - 160px));
+        --square-size: calc(var(--board-size) / 8);
+        
+        grid-template-columns: repeat(8, var(--square-size));
+        grid-template-rows: repeat(8, var(--square-size));
+        width: var(--board-size);
+        height: var(--board-size);
         border-width: 2px;
         margin: 0 auto;
     }
     
     .piece {
-        font-size: 22px;
+        font-size: clamp(16px, calc(var(--square-size) * 0.55), 28px);
     }
     
     .square.valid-move::after {
-        width: 10px;
-        height: 10px;
+        width: clamp(5px, calc(var(--square-size) * 0.2), 14px);
+        height: clamp(5px, calc(var(--square-size) * 0.2), 14px);
     }
 }
 
