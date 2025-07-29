@@ -295,21 +295,28 @@
 
 @media (max-width: 1024px) {
     .chess-board {
-        grid-template-columns: repeat(8, 70px);
-        grid-template-rows: repeat(8, 70px);
+        --container-size: min(92vw, 75vh);
+        --board-size: var(--container-size);
+        --square-size: calc(var(--board-size) / 8);
+        
+        grid-template-columns: repeat(8, var(--square-size));
+        grid-template-rows: repeat(8, var(--square-size));
+        width: var(--board-size);
+        height: var(--board-size);
+        margin: 0;
+        box-sizing: border-box;
     }
     
     .piece {
-        font-size: 40px;
+        font-size: clamp(18px, calc(var(--square-size) * 0.6), 40px);
     }
 }
 
 @media (max-width: 768px) {
     .chess-board {
-        /* Calculate size to fit within the main-game area with proper padding */
-        --available-width: calc(100vw - 16px);
-        --available-height: calc(100vh - 240px); /* Account for player areas and margins */
-        --board-size: min(var(--available-width), var(--available-height));
+        /* Use container-based sizing instead of viewport calculations */
+        --container-size: min(90vw, 70vh);
+        --board-size: var(--container-size);
         --square-size: calc(var(--board-size) / 8);
         
         grid-template-columns: repeat(8, var(--square-size));
@@ -317,7 +324,8 @@
         border-width: 2px;
         width: var(--board-size);
         height: var(--board-size);
-        margin: 0 auto;
+        margin: 0;
+        box-sizing: border-box;
     }
     
     .piece {
@@ -332,9 +340,8 @@
 
 @media (max-width: 600px) {
     .chess-board {
-        --available-width: calc(100vw - 12px);
-        --available-height: calc(100vh - 220px); /* Slightly less for smaller screens */
-        --board-size: min(var(--available-width), var(--available-height));
+        --container-size: min(88vw, 65vh);
+        --board-size: var(--container-size);
         --square-size: calc(var(--board-size) / 8);
         
         grid-template-columns: repeat(8, var(--square-size));
@@ -342,7 +349,8 @@
         width: var(--board-size);
         height: var(--board-size);
         border-width: 2px;
-        margin: 0 auto;
+        margin: 0;
+        box-sizing: border-box;
     }
     
     .piece {
@@ -357,9 +365,8 @@
 
 @media (max-width: 480px) {
     .chess-board {
-        --available-width: calc(100vw - 10px);
-        --available-height: calc(100vh - 200px); /* More compact for very small screens */
-        --board-size: min(var(--available-width), var(--available-height));
+        --container-size: min(85vw, 60vh);
+        --board-size: var(--container-size);
         --square-size: calc(var(--board-size) / 8);
         
         grid-template-columns: repeat(8, var(--square-size));
@@ -367,7 +374,8 @@
         width: var(--board-size);
         height: var(--board-size);
         border-width: 2px;
-        margin: 0 auto;
+        margin: 0;
+        box-sizing: border-box;
     }
     
     .piece {
@@ -375,8 +383,8 @@
     }
     
     .square.valid-move::after {
-        width: clamp(4px, calc(var(--square-size) * 0.15), 10px);
-        height: clamp(4px, calc(var(--square-size) * 0.15), 10px);
+        width: clamp(4px, calc(var(--square-size) * 0.16), 10px);
+        height: clamp(4px, calc(var(--square-size) * 0.16), 10px);
     }
 }
 

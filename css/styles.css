@@ -68,7 +68,6 @@ body {
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
         padding: 4px;
         gap: 4px;
     }
@@ -77,21 +76,28 @@ body {
         flex: 1;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start; /* Start from top instead of center */
-        align-items: stretch; /* Stretch to full width */
-        min-height: 0; /* Allow flex item to shrink */
-        overflow: hidden; /* Prevent content from overflowing */
-        padding: 0; /* Remove all padding */
+        justify-content: flex-start;
+        align-items: center;
+        min-height: 0;
+        overflow: hidden;
+        padding: 0;
     }
     
     .chess-board-container {
         width: 100%;
-        height: 100%; /* Take full height of main-game */
+        flex: 1;
         display: flex;
         justify-content: center;
-        align-items: flex-start; /* Align to top */
-        overflow: hidden; /* Ensure board stays within bounds */
-        padding: 0; /* Remove padding to eliminate top space */
+        align-items: center;
+        overflow: hidden;
+        padding: 2px;
+    }
+    
+    /* Ensure move history doesn't take too much space */
+    .move-history-compact {
+        flex-shrink: 0;
+        max-height: 50px;
+        overflow-y: auto;
     }
 }
 
