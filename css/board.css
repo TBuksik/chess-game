@@ -308,7 +308,7 @@
     .chess-board {
         /* Calculate size to fit within the main-game area with proper padding */
         --available-width: calc(100vw - 16px);
-        --available-height: calc(100vh - 280px); /* Account for player areas and margins */
+        --available-height: calc(100vh - 240px); /* Account for player areas and margins */
         --board-size: min(var(--available-width), var(--available-height));
         --square-size: calc(var(--board-size) / 8);
         
@@ -333,7 +333,7 @@
 @media (max-width: 600px) {
     .chess-board {
         --available-width: calc(100vw - 12px);
-        --available-height: calc(100vh - 260px); /* Slightly less for smaller screens */
+        --available-height: calc(100vh - 220px); /* Slightly less for smaller screens */
         --board-size: min(var(--available-width), var(--available-height));
         --square-size: calc(var(--board-size) / 8);
         
@@ -358,7 +358,7 @@
 @media (max-width: 480px) {
     .chess-board {
         --available-width: calc(100vw - 10px);
-        --available-height: calc(100vh - 240px); /* More compact for very small screens */
+        --available-height: calc(100vh - 200px); /* More compact for very small screens */
         --board-size: min(var(--available-width), var(--available-height));
         --square-size: calc(var(--board-size) / 8);
         
