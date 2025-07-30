@@ -103,7 +103,7 @@ body {
         justify-content: center;
         align-items: center;
         overflow: visible;
-        padding: 8px;
+        padding: 0;
         min-height: 300px;
     }
     

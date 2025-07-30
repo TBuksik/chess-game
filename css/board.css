@@ -302,20 +302,20 @@
 
 @media (max-width: 1024px) {
     .chess-board {
-        --container-size: min(90vw, 70vh);
-        --board-size: var(--container-size);
-        --square-size: calc(var(--board-size) / 8);
+        /* Fill entire container width */
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+        --square-size: calc(100% / 8);
         
         grid-template-columns: repeat(8, var(--square-size));
         grid-template-rows: repeat(8, var(--square-size));
-        width: var(--board-size);
-        height: var(--board-size);
-        margin: 8px auto;
+        margin: 0;
         box-sizing: border-box;
         border-radius: 0;
         border: none;
-        max-width: 90vw;
-        max-height: 90vh;
+        max-width: none;
+        max-height: none;
     }
     
     .piece {
@@ -325,22 +325,21 @@
 
 @media (max-width: 768px) {
     .chess-board {
-        /* Allow scrollable board size while maximizing space usage */
-        --container-size: min(88vw, 65vh);
-        --board-size: var(--container-size);
-        --square-size: calc(var(--board-size) / 8);
+        /* Fill entire container width */
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+        --square-size: calc(100% / 8);
         
         grid-template-columns: repeat(8, var(--square-size));
         grid-template-rows: repeat(8, var(--square-size));
         border-width: 0;
         border: none;
-        width: var(--board-size);
-        height: var(--board-size);
-        margin: 8px auto;
+        margin: 0;
         box-sizing: border-box;
         border-radius: 0;
-        max-width: 88vw;
-        min-height: 300px;
+        max-width: none;
+        min-height: unset;
     }
     
     .piece {
@@ -355,22 +354,21 @@
 
 @media (max-width: 600px) {
     .chess-board {
-        /* Ensure board is scrollable on small screens */
-        --container-size: min(85vw, 60vh);
-        --board-size: var(--container-size);
-        --square-size: calc(var(--board-size) / 8);
+        /* Fill entire container width */
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+        --square-size: calc(100% / 8);
         
         grid-template-columns: repeat(8, var(--square-size));
         grid-template-rows: repeat(8, var(--square-size));
-        width: var(--board-size);
-        height: var(--board-size);
         border-width: 0;
         border: none;
-        margin: 8px auto;
+        margin: 0;
         box-sizing: border-box;
         border-radius: 0;
-        max-width: 85vw;
-        min-height: 280px;
+        max-width: none;
+        min-height: unset;
     }
     
     .piece {
@@ -385,22 +383,21 @@
 
 @media (max-width: 480px) {
     .chess-board {
-        /* Optimize for iPhone 14 Pro Max and similar - allow scrolling */
-        --container-size: min(82vw, 55vh);
-        --board-size: var(--container-size);
-        --square-size: calc(var(--board-size) / 8);
+        /* Fill entire container width */
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+        --square-size: calc(100% / 8);
         
         grid-template-columns: repeat(8, var(--square-size));
         grid-template-rows: repeat(8, var(--square-size));
-        width: var(--board-size);
-        height: var(--board-size);
         border-width: 0;
         border: none;
-        margin: 8px auto;
+        margin: 0;
         box-sizing: border-box;
         border-radius: 0;
-        max-width: 82vw;
-        min-height: 260px;
+        max-width: none;
+        min-height: unset;
     }
     
     .piece {
