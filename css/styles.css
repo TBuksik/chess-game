@@ -106,12 +106,18 @@ body {
         padding: 0;
     }
     
-    /* Ensure move history doesn't take too much space */
+    /* Ensure move history doesn't take too much space and has no rounded corners */
     .move-history-compact {
         flex-shrink: 0;
         max-height: 50px;
         overflow-y: auto;
         border-radius: 0;
+        background: var(--bg-tertiary);
+        border: none;
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+        margin: 0;
+        padding: 8px 12px;
     }
 }
 
@@ -611,6 +617,20 @@ body {
     
     .stats-grid-mobile .stat-item {
         border-radius: 0;
+    }
+    
+    /* Remove rounded corners from all stat icons and other UI elements */
+    .stat-item {
+        border-radius: 0;
+    }
+    
+    .timer-icon {
+        border-radius: 0;
+    }
+    
+    /* Make sure no elements have rounded corners */
+    * {
+        border-radius: 0 !important;
     }
 }
 

@@ -323,8 +323,8 @@
 
 @media (max-width: 768px) {
     .chess-board {
-        /* Expand to full width as shown in red lines */
-        --container-size: min(100vw, 70vh);
+        /* Expand to full width as shown in red lines - maximize space usage */
+        --container-size: min(100vw, 72vh);
         --board-size: var(--container-size);
         --square-size: calc(var(--board-size) / 8);
         
@@ -351,7 +351,8 @@
 
 @media (max-width: 600px) {
     .chess-board {
-        --container-size: min(100vw, 65vh);
+        /* Maximize board size to fill available space */
+        --container-size: min(100vw, 68vh);
         --board-size: var(--container-size);
         --square-size: calc(var(--board-size) / 8);
         
@@ -378,7 +379,8 @@
 
 @media (max-width: 480px) {
     .chess-board {
-        --container-size: min(100vw, 60vh);
+        /* For iPhone 14 Pro Max (430px) and similar devices - maximize board size */
+        --container-size: min(100vw, 65vh);
         --board-size: var(--container-size);
         --square-size: calc(var(--board-size) / 8);
         
@@ -400,6 +402,34 @@
     .square.valid-move::after {
         width: clamp(4px, calc(var(--square-size) * 0.16), 10px);
         height: clamp(4px, calc(var(--square-size) * 0.16), 10px);
+    }
+}
+
+/* Specific optimization for iPhone 14 Pro Max (430px width) */
+@media (max-width: 430px) {
+    .chess-board {
+        /* Maximize board to eliminate empty space */
+        --container-size: min(100vw, 60vh);
+        --board-size: var(--container-size);
+        --square-size: calc(var(--board-size) / 8);
+        
+        grid-template-columns: repeat(8, var(--square-size));
+        grid-template-rows: repeat(8, var(--square-size));
+        width: var(--board-size);
+        height: var(--board-size);
+        border: none;
+        margin: 0;
+        box-sizing: border-box;
+        border-radius: 0;
+    }
+    
+    .piece {
+        font-size: clamp(10px, calc(var(--square-size) * 0.4), 22px);
+    }
+    
+    .square.valid-move::after {
+        width: clamp(3px, calc(var(--square-size) * 0.14), 8px);
+        height: clamp(3px, calc(var(--square-size) * 0.14), 8px);
     }
 }
 
