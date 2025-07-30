@@ -61,11 +61,13 @@ body {
     body {
         height: 100vh;
         overflow: hidden;
-        padding: 8px;
+        padding: 0;
+        margin: 0;
     }
     
     .game-container {
-        height: calc(100vh - 16px);
+        height: 100vh;
+        width: 100vw;
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -73,33 +75,35 @@ body {
         gap: 0;
         background: var(--bg-secondary);
         border-radius: 0;
-        border: 2px solid var(--border-color);
-        box-shadow: 0 8px 32px var(--shadow);
+        border: none;
+        box-shadow: none;
+        margin: 0;
     }
     
     .main-game {
         flex: 1;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
+        justify-content: center;
         align-items: center;
         min-height: 0;
         overflow: hidden;
-        padding: 8px;
+        padding: 0;
         background: transparent;
         border-radius: 0;
         border: none;
         box-shadow: none;
+        width: 100%;
     }
     
     .chess-board-container {
         width: 100%;
-        flex: 1;
+        height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
         overflow: hidden;
-        padding: 2px;
+        padding: 0;
     }
     
     /* Ensure move history doesn't take too much space */
@@ -107,6 +111,7 @@ body {
         flex-shrink: 0;
         max-height: 50px;
         overflow-y: auto;
+        border-radius: 0;
     }
 }
 
@@ -592,6 +597,19 @@ body {
     
     /* Remove border radius from move history compact */
     .move-history-compact {
+        border-radius: 0;
+    }
+    
+    /* Remove all rounded corners from all elements on mobile */
+    .ai-indicator-large {
+        border-radius: 0;
+    }
+    
+    .ai-dot-large {
+        border-radius: 0;
+    }
+    
+    .stats-grid-mobile .stat-item {
         border-radius: 0;
     }
 }
@@ -1432,7 +1450,7 @@ body {
         border: none;
         cursor: pointer;
         transition: var(--transition-fast);
-        border-radius: var(--radius-sm);
+        border-radius: 0;
     }
     
     .stats-grid-mobile .stat-item:hover {

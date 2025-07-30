@@ -302,7 +302,7 @@
 
 @media (max-width: 1024px) {
     .chess-board {
-        --container-size: min(92vw, 75vh);
+        --container-size: min(100vw, 75vh);
         --board-size: var(--container-size);
         --square-size: calc(var(--board-size) / 8);
         
@@ -312,6 +312,8 @@
         height: var(--board-size);
         margin: 0;
         box-sizing: border-box;
+        border-radius: 0;
+        border: none;
     }
     
     .piece {
@@ -321,18 +323,20 @@
 
 @media (max-width: 768px) {
     .chess-board {
-        /* Use container-based sizing instead of viewport calculations */
-        --container-size: min(90vw, 70vh);
+        /* Expand to full width as shown in red lines */
+        --container-size: min(100vw, 70vh);
         --board-size: var(--container-size);
         --square-size: calc(var(--board-size) / 8);
         
         grid-template-columns: repeat(8, var(--square-size));
         grid-template-rows: repeat(8, var(--square-size));
-        border-width: 2px;
+        border-width: 0;
+        border: none;
         width: var(--board-size);
         height: var(--board-size);
         margin: 0;
         box-sizing: border-box;
+        border-radius: 0;
     }
     
     .piece {
@@ -347,7 +351,7 @@
 
 @media (max-width: 600px) {
     .chess-board {
-        --container-size: min(88vw, 65vh);
+        --container-size: min(100vw, 65vh);
         --board-size: var(--container-size);
         --square-size: calc(var(--board-size) / 8);
         
@@ -355,9 +359,11 @@
         grid-template-rows: repeat(8, var(--square-size));
         width: var(--board-size);
         height: var(--board-size);
-        border-width: 2px;
+        border-width: 0;
+        border: none;
         margin: 0;
         box-sizing: border-box;
+        border-radius: 0;
     }
     
     .piece {
@@ -372,7 +378,7 @@
 
 @media (max-width: 480px) {
     .chess-board {
-        --container-size: min(85vw, 60vh);
+        --container-size: min(100vw, 60vh);
         --board-size: var(--container-size);
         --square-size: calc(var(--board-size) / 8);
         
@@ -380,9 +386,11 @@
         grid-template-rows: repeat(8, var(--square-size));
         width: var(--board-size);
         height: var(--board-size);
-        border-width: 2px;
+        border-width: 0;
+        border: none;
         margin: 0;
         box-sizing: border-box;
+        border-radius: 0;
     }
     
     .piece {
