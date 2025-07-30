@@ -56,20 +56,25 @@ body {
     padding: 0;
 }
 
-/* Fix mobile layout to prevent scrolling */
+/* Fix mobile layout to prevent scrolling and remove gaps */
 @media (max-width: 1024px) {
     body {
         height: 100vh;
         overflow: hidden;
+        padding: 8px;
     }
     
     .game-container {
-        height: 100vh;
+        height: calc(100vh - 16px);
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        padding: 4px;
-        gap: 4px;
+        padding: 0;
+        gap: 0;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-lg);
+        border: 2px solid var(--border-color);
+        box-shadow: 0 8px 32px var(--shadow);
     }
     
     .main-game {
@@ -80,7 +85,11 @@ body {
         align-items: center;
         min-height: 0;
         overflow: hidden;
-        padding: 0;
+        padding: 8px;
+        background: transparent;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
     }
     
     .chess-board-container {
@@ -545,15 +554,35 @@ body {
     }
 }
 
-/* Mobile Player Cards */
+/* Mobile Player Cards - Remove gaps and individual borders */
 .opponent-player,
 .current-player {
     width: 100%;
-    padding: 10px;
-    background: var(--bg-tertiary);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
-    margin: 5px 0;
+    padding: 12px 16px;
+    background: transparent;
+    border-radius: 0;
+    border: none;
+    margin: 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.current-player {
+    border-bottom: none;
+    border-top: 1px solid var(--border-color);
+}
+
+/* First section gets top border radius */
+.opponent-player {
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Last section gets bottom border radius */
+.current-player {
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
+    border-top: 1px solid var(--border-color);
 }
 
 .opponent-player .player-info,
