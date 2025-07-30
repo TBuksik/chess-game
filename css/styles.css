@@ -72,7 +72,7 @@ body {
         padding: 0;
         gap: 0;
         background: var(--bg-secondary);
-        border-radius: var(--radius-lg);
+        border-radius: 0;
         border: 2px solid var(--border-color);
         box-shadow: 0 8px 32px var(--shadow);
     }
@@ -571,18 +571,29 @@ body {
     border-top: 1px solid var(--border-color);
 }
 
-/* First section gets top border radius */
+/* First section gets no border radius */
 .opponent-player {
-    border-top-left-radius: var(--radius-lg);
-    border-top-right-radius: var(--radius-lg);
+    border-radius: 0;
     border-bottom: 1px solid var(--border-color);
 }
 
-/* Last section gets bottom border radius */
+/* Last section gets no border radius */
 .current-player {
-    border-bottom-left-radius: var(--radius-lg);
-    border-bottom-right-radius: var(--radius-lg);
+    border-radius: 0;
     border-top: 1px solid var(--border-color);
+}
+
+/* Remove border radius from avatars on mobile */
+@media (max-width: 1024px) {
+    .opponent-player .player-avatar,
+    .current-player .player-avatar {
+        border-radius: 0;
+    }
+    
+    /* Remove border radius from move history compact */
+    .move-history-compact {
+        border-radius: 0;
+    }
 }
 
 .opponent-player .player-info,
@@ -699,7 +710,7 @@ body {
     .main-game {
         width: 100%;
         height: 100%;
-        border-radius: var(--radius-lg);
+        border-radius: 0;
         border: 1px solid var(--border-color);
         /* padding: 10px; */
         min-width: auto;

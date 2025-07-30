@@ -10,6 +10,13 @@
     background: var(--bg-secondary);
 }
 
+/* Remove border radius on mobile */
+@media (max-width: 1024px) {
+    .chess-board {
+        border-radius: 0;
+    }
+}
+
 .square {
     position: relative;
     display: flex;
