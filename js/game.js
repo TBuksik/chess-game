@@ -18,6 +18,7 @@ class ChessGame {
         this.currentPlayerStartTime = null;
         this.timerInterval = null;
         this.timeIncrement = 0; // Increment per move in seconds (0 for no increment)
+        this.accumulatedTime = { white: 0, black: 0 }; // Track fractional seconds
         
         this.gameMode = gameMode; // 'local', 'easy', 'medium', 'hard'
         this.ai = null;
@@ -80,6 +81,7 @@ class ChessGame {
         
         // Reset timers to default (10 minutes each)
         this.timers = { white: 600, black: 600 };
+        this.accumulatedTime = { white: 0, black: 0 }; // Reset accumulated time
         this.isTimerActive = false;
         this.currentPlayerStartTime = null;
         if (this.timerInterval) {
@@ -228,11 +230,13 @@ class ChessGame {
                 return;
             }
             
-            // Calculate elapsed time since last start
-            const elapsed = Math.floor((Date.now() - this.currentPlayerStartTime) / 1000);
+            // Calculate elapsed time since last start (including accumulated fractions)
+            const elapsedMs = Date.now() - this.currentPlayerStartTime;
+            const elapsedSeconds = elapsedMs / 1000;
+            const totalElapsed = Math.floor(this.accumulatedTime[this.currentPlayer] + elapsedSeconds);
             
             // Update current player's time
-            const newTime = this.timers[this.currentPlayer] - elapsed;
+            const newTime = this.timers[this.currentPlayer] - totalElapsed;
             
             if (newTime <= 0) {
                 // Time's up!
@@ -256,9 +260,20 @@ class ChessGame {
         }
         
         if (this.currentPlayerStartTime) {
-            // Update the actual time spent
-            const elapsed = Math.floor((Date.now() - this.currentPlayerStartTime) / 1000);
-            this.timers[this.currentPlayer] = Math.max(0, this.timers[this.currentPlayer] - elapsed);
+            // Calculate precise elapsed time (including fractions)
+            const elapsedMs = Date.now() - this.currentPlayerStartTime;
+            const elapsedSeconds = elapsedMs / 1000;
+            
+            // Add to accumulated time for this player
+            this.accumulatedTime[this.currentPlayer] += elapsedSeconds;
+            
+            // If accumulated time >= 1 second, deduct from timer
+            if (this.accumulatedTime[this.currentPlayer] >= 1) {
+                const secondsToDeduct = Math.floor(this.accumulatedTime[this.currentPlayer]);
+                this.timers[this.currentPlayer] = Math.max(0, this.timers[this.currentPlayer] - secondsToDeduct);
+                this.accumulatedTime[this.currentPlayer] -= secondsToDeduct;
+            }
+            
             this.currentPlayerStartTime = null;
         }
         
@@ -288,13 +303,16 @@ class ChessGame {
         let whiteTime = this.timers.white;
         let blackTime = this.timers.black;
         
-        // If timer is active, subtract elapsed time for current player
+        // If timer is active, subtract elapsed time for current player (including accumulated fractions)
         if (this.isTimerActive && this.currentPlayerStartTime) {
-            const elapsed = Math.floor((Date.now() - this.currentPlayerStartTime) / 1000);
+            const elapsedMs = Date.now() - this.currentPlayerStartTime;
+            const elapsedSeconds = elapsedMs / 1000;
+            const totalElapsed = Math.floor(this.accumulatedTime[this.currentPlayer] + elapsedSeconds);
+            
             if (this.currentPlayer === 'white') {
-                whiteTime = Math.max(0, whiteTime - elapsed);
+                whiteTime = Math.max(0, whiteTime - totalElapsed);
             } else {
-                blackTime = Math.max(0, blackTime - elapsed);
+                blackTime = Math.max(0, blackTime - totalElapsed);
             }
         }
         
@@ -342,6 +360,7 @@ class ChessGame {
         this.timers.white = whiteTime;
         this.timers.black = blackTime;
         this.timeIncrement = increment;
+        this.accumulatedTime = { white: 0, black: 0 }; // Reset accumulated time
         this.updateTimerDisplay();
     }
     
