@@ -59,6 +59,9 @@ class ChessGamePage {
             // Add theme handling
             this.initializeThemeHandling();
             
+            // Update player UI for AI mode
+            this.updatePlayerNamesForGameMode();
+            
             // Show game mode notification
             setTimeout(() => {
                 const modeText = this.gameMode === 'local' ? 'Local 1v1' : `${this.gameMode} Bot`;
@@ -129,6 +132,26 @@ class ChessGamePage {
                     break;
             }
         });
+    }
+    
+    /**
+     * Update player names based on game mode
+     */
+    updatePlayerNamesForGameMode() {
+        if (this.gameMode !== 'local') {
+            // Update opponent (black) player name for AI modes
+            const opponentNameElement = document.querySelector('.opponent-player .player-name');
+            if (opponentNameElement) {
+                const difficultyText = this.gameMode.charAt(0).toUpperCase() + this.gameMode.slice(1);
+                opponentNameElement.innerHTML = `${difficultyText} Bot <span class="difficulty-indicator difficulty-${this.gameMode}">${this.gameMode}</span>`;
+            }
+            
+            // Update current (white) player name to "You"
+            const currentNameElement = document.querySelector('.current-player .player-name');
+            if (currentNameElement) {
+                currentNameElement.textContent = 'You';
+            }
+        }
     }
     
     /**

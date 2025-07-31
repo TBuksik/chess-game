@@ -4,7 +4,7 @@
  * Chess game class
  */
 class ChessGame {
-    constructor(boardElement) {
+    constructor(boardElement, gameMode = 'local') {
         this.board = new ChessBoard(boardElement);
         this.currentPlayer = 'white';
         this.gameState = 'playing'; // 'playing', 'check', 'checkmate', 'stalemate', 'draw'
@@ -13,6 +13,13 @@ class ChessGame {
         this.gameStartTime = Date.now();
         this.timers = { white: Infinity, black: Infinity };
         this.isTimerActive = false;
+        this.gameMode = gameMode; // 'local', 'easy', 'medium', 'hard'
+        this.ai = null;
+        
+        // Initialize AI if needed
+        if (['easy', 'medium', 'hard'].includes(gameMode)) {
+            this.ai = new ChessAI(gameMode, 'black');
+        }
         
         // Give board a reference to the game for turn validation
         this.board.game = this;
@@ -71,7 +78,18 @@ class ChessGame {
         this.updateMoveHistory();
         this.updateCapturedPieces();
         
-        ChessUtils.showNotification('New game started!', 'success');
+        // Show game mode notification
+        if (this.gameMode === 'local') {
+            ChessUtils.showNotification('New local game started!', 'success');
+        } else {
+            const difficultyText = this.gameMode.charAt(0).toUpperCase() + this.gameMode.slice(1);
+            ChessUtils.showNotification(`New game vs ${difficultyText} Bot started!`, 'success');
+        }
+        
+        // If AI is white, make the first move
+        if (this.ai && this.currentPlayer === this.ai.color) {
+            setTimeout(() => this.makeAIMove(), 1000);
+        }
     }
     
     /**
@@ -102,15 +120,51 @@ class ChessGame {
         
         // Play appropriate sound
         this.playMoveSound(lastMove);
+        
+        // Trigger AI move if it's AI's turn
+        if (this.ai && this.currentPlayer === this.ai.color && this.gameState === 'playing') {
+            this.makeAIMove();
+        }
     }
     
     /**
      * Check if it's a valid turn
      */
     isValidTurn(piece) {
+        // In AI mode, prevent human from moving AI pieces
+        if (this.ai && piece.color === this.ai.color) {
+            return false;
+        }
+        
         // Allow moves when game is playing or when in check (to allow escape moves)
         return piece.color === this.currentPlayer && 
                (this.gameState === 'playing' || this.gameState === 'check');
+    }
+    
+    /**
+     * Make an AI move
+     */
+    async makeAIMove() {
+        if (!this.ai || this.gameState !== 'playing') return;
+        
+        try {
+            const boardState = this.board.getBoardState();
+            const aiMove = await this.ai.getBestMove(boardState, this.gameState);
+            
+            if (aiMove) {
+                const { from, to } = aiMove;
+                const [fromRow, fromCol] = from;
+                const [toRow, toCol] = to;
+                
+                // Execute the AI move
+                setTimeout(() => {
+                    this.board.makeMove(fromRow, fromCol, toRow, toCol);
+                }, 200); // Small delay for better UX
+            }
+        } catch (error) {
+            console.error('AI move error:', error);
+            ChessUtils.showNotification('AI encountered an error', 'error');
+        }
     }
     
     /**
