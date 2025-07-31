@@ -10,6 +10,18 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    font-size: 60px;
+    line-height: 1;
+    color: transparent; /* Hide Unicode symbols when SVG is available */
+}
+
+/* Show Unicode symbols as fallback when SVG fails to load */
+.piece::before {
+    content: attr(data-unicode);
+    position: absolute;
+    color: var(--text-primary);
+    font-size: inherit;
+    z-index: -1;
 }
 
 /* White Pieces */

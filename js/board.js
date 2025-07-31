@@ -82,6 +82,9 @@ class ChessBoard {
         pieceElement.dataset.color = piece.color;
         pieceElement.draggable = true;
         
+        // Set Unicode symbol as fallback if SVG doesn't load
+        pieceElement.textContent = piece.getSymbol();
+        
         return pieceElement;
     }
     
@@ -396,11 +399,12 @@ class ChessBoard {
         // Animate move
         this.animateMove(fromRow, fromCol, toRow, toCol);
         
-        // Re-render board
+        // Re-render board - wait longer if there's a capture to let animation complete
+        const renderDelay = capturedPiece ? 600 : 300; // 600ms for captures, 300ms for normal moves
         setTimeout(() => {
             this.renderBoard();
             this.highlightLastMove();
-        }, 300);
+        }, renderDelay);
         
         // Dispatch move event
         this.dispatchMoveEvent();
@@ -442,6 +446,13 @@ class ChessBoard {
         if (piece) {
             piece.classList.add('captured');
             ChessUtils.playSound('capture');
+            
+            // Remove the piece element after the animation completes
+            setTimeout(() => {
+                if (piece.parentNode) {
+                    piece.parentNode.removeChild(piece);
+                }
+            }, 500); // Match the animation duration
         }
     }
     
