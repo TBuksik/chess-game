@@ -11,8 +11,14 @@ class ChessGame {
         this.moveHistory = [];
         this.capturedPieces = { white: [], black: [] };
         this.gameStartTime = Date.now();
-        this.timers = { white: Infinity, black: Infinity };
+        
+        // Timer system
+        this.timers = { white: 600, black: 600 }; // 10 minutes per player (in seconds)
         this.isTimerActive = false;
+        this.currentPlayerStartTime = null;
+        this.timerInterval = null;
+        this.timeIncrement = 0; // Increment per move in seconds (0 for no increment)
+        
         this.gameMode = gameMode; // 'local', 'easy', 'medium', 'hard'
         this.ai = null;
         
@@ -72,18 +78,34 @@ class ChessGame {
         this.capturedPieces = { white: [], black: [] };
         this.gameStartTime = Date.now();
         
+        // Reset timers to default (10 minutes each)
+        this.timers = { white: 600, black: 600 };
+        this.isTimerActive = false;
+        this.currentPlayerStartTime = null;
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+        }
+        
         this.board.resetBoard();
         this.updateGameStatus();
         this.updatePlayerUI();
         this.updateMoveHistory();
         this.updateCapturedPieces();
+        this.updateTimerDisplay();
+        
+        // Start the timer after a short delay
+        setTimeout(() => {
+            this.isTimerActive = true;
+            this.startTimer();
+        }, 1000);
         
         // Show game mode notification
         if (this.gameMode === 'local') {
-            ChessUtils.showNotification('New local game started!', 'success');
+            ChessUtils.showNotification('New local game started! Timer: 10 minutes each', 'success');
         } else {
             const difficultyText = this.gameMode.charAt(0).toUpperCase() + this.gameMode.slice(1);
-            ChessUtils.showNotification(`New game vs ${difficultyText} Bot started!`, 'success');
+            ChessUtils.showNotification(`New game vs ${difficultyText} Bot started! Timer: 10 minutes each`, 'success');
         }
         
         // If AI is white, make the first move
@@ -171,7 +193,156 @@ class ChessGame {
      * Switch to the next player
      */
     switchPlayer() {
+        // Stop timer for current player and add increment if any
+        if (this.isTimerActive) {
+            this.stopTimer();
+            if (this.timeIncrement > 0) {
+                this.timers[this.currentPlayer] += this.timeIncrement;
+            }
+        }
+        
         this.currentPlayer = ChessUtils.getOppositeColor(this.currentPlayer);
+        
+        // Start timer for new current player
+        if (this.isTimerActive && this.gameState === 'playing') {
+            this.startTimer();
+        }
+        
+        this.updateTimerDisplay();
+    }
+    
+    /**
+     * Start the chess timer for the current player
+     */
+    startTimer() {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+        }
+        
+        this.currentPlayerStartTime = Date.now();
+        this.isTimerActive = true;
+        
+        this.timerInterval = setInterval(() => {
+            if (this.gameState !== 'playing') {
+                this.stopTimer();
+                return;
+            }
+            
+            // Calculate elapsed time since last start
+            const elapsed = Math.floor((Date.now() - this.currentPlayerStartTime) / 1000);
+            
+            // Update current player's time
+            const newTime = this.timers[this.currentPlayer] - elapsed;
+            
+            if (newTime <= 0) {
+                // Time's up!
+                this.timers[this.currentPlayer] = 0;
+                this.stopTimer();
+                this.endGame('timeout');
+                return;
+            }
+            
+            this.updateTimerDisplay();
+        }, 100); // Update every 100ms for smooth countdown
+    }
+    
+    /**
+     * Stop the chess timer
+     */
+    stopTimer() {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+        }
+        
+        if (this.currentPlayerStartTime) {
+            // Update the actual time spent
+            const elapsed = Math.floor((Date.now() - this.currentPlayerStartTime) / 1000);
+            this.timers[this.currentPlayer] = Math.max(0, this.timers[this.currentPlayer] - elapsed);
+            this.currentPlayerStartTime = null;
+        }
+        
+        this.updateTimerDisplay();
+    }
+    
+    /**
+     * Pause/Resume the timer
+     */
+    toggleTimer() {
+        if (this.isTimerActive && this.timerInterval) {
+            this.stopTimer();
+            this.isTimerActive = false;
+        } else {
+            this.isTimerActive = true;
+            if (this.gameState === 'playing') {
+                this.startTimer();
+            }
+        }
+    }
+    
+    /**
+     * Update timer display in the UI
+     */
+    updateTimerDisplay() {
+        // Calculate current display time
+        let whiteTime = this.timers.white;
+        let blackTime = this.timers.black;
+        
+        // If timer is active, subtract elapsed time for current player
+        if (this.isTimerActive && this.currentPlayerStartTime) {
+            const elapsed = Math.floor((Date.now() - this.currentPlayerStartTime) / 1000);
+            if (this.currentPlayer === 'white') {
+                whiteTime = Math.max(0, whiteTime - elapsed);
+            } else {
+                blackTime = Math.max(0, blackTime - elapsed);
+            }
+        }
+        
+        // Update white timer displays
+        const whiteTimerElements = document.querySelectorAll('.time-value.white, .current-player .time-value');
+        whiteTimerElements.forEach(element => {
+            element.textContent = ChessUtils.formatTime(whiteTime);
+            element.classList.toggle('time-low', whiteTime <= 60);
+            element.classList.toggle('time-critical', whiteTime <= 10);
+        });
+        
+        // Update black timer displays
+        const blackTimerElements = document.querySelectorAll('.time-value.black, .opponent-player .time-value');
+        blackTimerElements.forEach(element => {
+            element.textContent = ChessUtils.formatTime(blackTime);
+            element.classList.toggle('time-low', blackTime <= 60);
+            element.classList.toggle('time-critical', blackTime <= 10);
+        });
+        
+        // Update active timer indicators
+        this.updateActiveTimerIndicators();
+    }
+    
+    /**
+     * Update visual indicators for active timer
+     */
+    updateActiveTimerIndicators() {
+        const whiteTimers = document.querySelectorAll('.timer-white, .current-player .time-info');
+        const blackTimers = document.querySelectorAll('.timer-black, .opponent-player .time-info');
+        
+        whiteTimers.forEach(timer => {
+            timer.classList.toggle('timer-active', this.currentPlayer === 'white' && this.isTimerActive);
+        });
+        
+        blackTimers.forEach(timer => {
+            timer.classList.toggle('timer-active', this.currentPlayer === 'black' && this.isTimerActive);
+        });
+    }
+    
+    /**
+     * Set timer configuration
+     */
+    setTimerConfig(whiteTime, blackTime, increment = 0) {
+        this.stopTimer();
+        this.timers.white = whiteTime;
+        this.timers.black = blackTime;
+        this.timeIncrement = increment;
+        this.updateTimerDisplay();
     }
     
     /**
@@ -248,6 +419,10 @@ class ChessGame {
     endGame(reason) {
         // Set game state to ended to prevent further moves
         this.gameState = reason;
+        
+        // Stop the timer
+        this.stopTimer();
+        this.isTimerActive = false;
         
         // Disable further moves
         this.board.clearSelection();

@@ -225,6 +225,49 @@ body {
     gap: var(--space-sm);
     color: var(--text-secondary);
     font-size: var(--font-size-base);
+    transition: all var(--transition-fast);
+}
+
+/* Timer States */
+.time-info.timer-active {
+    background: rgba(51, 161, 204, 0.1);
+    border-radius: var(--radius-md);
+    padding: var(--space-sm);
+    border: 1px solid var(--accent-primary);
+}
+
+.time-info.timer-active .timer-icon {
+    animation: pulse 2s infinite;
+}
+
+.time-value {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-weight: 600;
+    min-width: 60px;
+    text-align: center;
+    transition: all var(--transition-fast);
+}
+
+.time-value.time-low {
+    color: #fbbf24;
+    font-weight: 700;
+}
+
+.time-value.time-critical {
+    color: #ff6b6b;
+    font-weight: 700;
+    animation: criticalTime 1s infinite alternate;
+}
+
+@keyframes criticalTime {
+    0% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 .next-move-indicator {
