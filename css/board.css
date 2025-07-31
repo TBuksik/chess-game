@@ -302,9 +302,9 @@
 
 @media (max-width: 1024px) {
     .chess-board {
-        /* Fill entire container width */
+        /* Fill entire container width - use 100% of chess-board-container */
         width: 100%;
-        height: auto;
+        height: 100%;
         aspect-ratio: 1;
         --square-size: calc(100% / 8);
         
@@ -325,9 +325,9 @@
 
 @media (max-width: 768px) {
     .chess-board {
-        /* Fill entire container width */
+        /* Fill entire container width - use 100% of chess-board-container */
         width: 100%;
-        height: auto;
+        height: 100%;
         aspect-ratio: 1;
         --square-size: calc(100% / 8);
         
@@ -354,9 +354,9 @@
 
 @media (max-width: 600px) {
     .chess-board {
-        /* Fill entire container width */
+        /* Fill entire container width - use 100% of chess-board-container */
         width: 100%;
-        height: auto;
+        height: 100%;
         aspect-ratio: 1;
         --square-size: calc(100% / 8);
         
@@ -383,9 +383,9 @@
 
 @media (max-width: 480px) {
     .chess-board {
-        /* Fill entire container width */
+        /* Fill entire container width - use 100% of chess-board-container */
         width: 100%;
-        height: auto;
+        height: 100%;
         aspect-ratio: 1;
         --square-size: calc(100% / 8);
         
@@ -410,24 +410,23 @@
     }
 }
 
-/* Specific optimization for iPhone 14 Pro Max (430px width) - allow scrolling */
+/* Specific optimization for iPhone 14 Pro Max (430px width) - fill container completely */
 @media (max-width: 430px) {
     .chess-board {
-        /* Ensure full board visibility with scrolling capability */
-        --container-size: min(80vw, 50vh);
-        --board-size: var(--container-size);
-        --square-size: calc(var(--board-size) / 8);
+        /* Use 100% of chess-board-container space */
+        width: 100%;
+        height: 100%;
+        aspect-ratio: 1;
+        --square-size: calc(100% / 8);
         
         grid-template-columns: repeat(8, var(--square-size));
         grid-template-rows: repeat(8, var(--square-size));
-        width: var(--board-size);
-        height: var(--board-size);
         border: none;
-        margin: 8px auto;
+        margin: 0;
         box-sizing: border-box;
         border-radius: 0;
-        max-width: 80vw;
-        min-height: 240px;
+        max-width: none;
+        min-height: unset;
     }
     
     .piece {
