@@ -158,7 +158,7 @@ class ChessGame {
                 
                 // Execute the AI move
                 setTimeout(() => {
-                    this.board.makeMove(fromRow, fromCol, toRow, toCol);
+                    this.board.makeMove(fromRow, fromCol, toRow, toCol, true); // Pass true for AI move
                 }, 200); // Small delay for better UX
             }
         } catch (error) {

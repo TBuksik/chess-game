@@ -350,7 +350,7 @@ class ChessBoard {
     /**
      * Make a move
      */
-    makeMove(fromRow, fromCol, toRow, toCol) {
+    makeMove(fromRow, fromCol, toRow, toCol, isAIMove = false) {
         const piece = this.board[fromRow][fromCol];
         if (!piece) return false;
         
@@ -369,8 +369,8 @@ class ChessBoard {
             return false;
         }
         
-        // Check if it's the correct player's turn
-        if (this.game && !this.game.isValidTurn(piece)) {
+        // Check if it's the correct player's turn (skip for AI moves)
+        if (this.game && !isAIMove && !this.game.isValidTurn(piece)) {
             ChessUtils.showNotification(`It's ${this.game.currentPlayer}'s turn!`, 'warning');
             Animation.shake(this.getSquareElement(fromRow, fromCol));
             return false;
