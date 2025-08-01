@@ -388,10 +388,32 @@ class ChessBoard {
             this.animateCapture(toRow, toCol);
         }
         
+        // Check for pawn promotion
+        const isPromotion = this.isPawnPromotion(fromRow, fromCol, toRow, toCol);
+        
         // Move piece
         this.board[toRow][toCol] = piece;
         this.board[fromRow][fromCol] = null;
         piece.moveTo(toRow, toCol);
+        
+        // Handle pawn promotion
+        if (isPromotion) {
+            if (isAIMove) {
+                // AI automatically promotes to queen
+                this.promotePawn(toRow, toCol, 'queen', piece.color);
+            } else {
+                // Show promotion modal for human player
+                this.showPromotionModal(piece.color).then(chosenPiece => {
+                    this.promotePawn(toRow, toCol, chosenPiece, piece.color);
+                    
+                    // Update last move with promotion info
+                    this.lastMove.promotion = chosenPiece;
+                    
+                    // Dispatch move event after promotion
+                    this.dispatchMoveEvent();
+                });
+            }
+        }
         
         // Update last move
         this.lastMove = { from: [fromRow, fromCol], to: [toRow, toCol], piece, capturedPiece };
@@ -406,8 +428,10 @@ class ChessBoard {
             this.highlightLastMove();
         }, renderDelay);
         
-        // Dispatch move event
-        this.dispatchMoveEvent();
+        // Dispatch move event (unless it's a promotion that will be handled later)
+        if (!isPromotion || isAIMove) {
+            this.dispatchMoveEvent();
+        }
         
         return true;
     }
@@ -671,6 +695,86 @@ class ChessBoard {
         this.container.querySelectorAll('.square').forEach(square => {
             square.style.transform = '';
         });
+    }
+
+    /**
+     * Check if a move results in pawn promotion
+     */
+    isPawnPromotion(fromRow, fromCol, toRow, toCol) {
+        const piece = this.board[fromRow][fromCol];
+        if (!piece || piece.type !== 'pawn') return false;
+        
+        // White pawn reaching row 0 (top) or black pawn reaching row 7 (bottom)
+        return (piece.color === 'white' && toRow === 0) || 
+               (piece.color === 'black' && toRow === 7);
+    }
+
+    /**
+     * Show pawn promotion modal and return a promise with the chosen piece
+     */
+    showPromotionModal(color) {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('promotion-modal');
+            const choices = modal.querySelectorAll('.promotion-choice');
+            
+            // Update piece symbols based on color
+            choices.forEach(choice => {
+                const pieceType = choice.dataset.piece;
+                const symbols = {
+                    white: {
+                        queen: '♕',
+                        rook: '♖', 
+                        bishop: '♗',
+                        knight: '♘'
+                    },
+                    black: {
+                        queen: '♛',
+                        rook: '♜',
+                        bishop: '♝', 
+                        knight: '♞'
+                    }
+                };
+                choice.textContent = symbols[color][pieceType];
+            });
+            
+            // Show modal
+            modal.style.display = 'flex';
+            
+            // Add click handlers
+            const handleChoice = (e) => {
+                const pieceType = e.target.dataset.piece;
+                if (pieceType) {
+                    modal.style.display = 'none';
+                    
+                    // Remove event listeners
+                    choices.forEach(choice => {
+                        choice.removeEventListener('click', handleChoice);
+                    });
+                    
+                    resolve(pieceType);
+                }
+            };
+            
+            choices.forEach(choice => {
+                choice.addEventListener('click', handleChoice);
+            });
+        });
+    }
+
+    /**
+     * Promote a pawn to the chosen piece type
+     */
+    promotePawn(row, col, pieceType, color) {
+        this.board[row][col] = {
+            type: pieceType,
+            color: color
+        };
+        
+        // Update the visual representation
+        this.updateSquare(row, col);
+        
+        // Play promotion sound (using capture sound for now)
+        ChessUtils.playSound('capture');
     }
 }
 
