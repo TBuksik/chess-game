@@ -169,7 +169,7 @@ class ChessGame {
      * Make an AI move
      */
     async makeAIMove() {
-        if (!this.ai || this.gameState !== 'playing') return;
+        if (!this.ai || (this.gameState !== 'playing' && this.gameState !== 'check')) return;
         
         try {
             const boardState = this.board.getBoardState();
