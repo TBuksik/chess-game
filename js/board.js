@@ -405,6 +405,7 @@ class ChessBoard {
                 // AI automatically promotes to queen
                 this.promotePawn(toRow, toCol, 'queen', piece.color);
                 this.lastMove.promotion = 'queen';
+                this.lastMove.piece = this.board[toRow][toCol]; // Update to the promoted piece
                 
                 // Animate move and render board
                 this.animateMove(fromRow, fromCol, toRow, toCol);
@@ -429,8 +430,9 @@ class ChessBoard {
                     this.showPromotionModal(piece.color).then(chosenPiece => {
                         this.promotePawn(toRow, toCol, chosenPiece, piece.color);
                         
-                        // Update last move with promotion info
+                        // Update last move with promotion info and the new promoted piece
                         this.lastMove.promotion = chosenPiece;
+                        this.lastMove.piece = this.board[toRow][toCol]; // Update to the promoted piece
                         
                         // Re-render board to show the promoted piece
                         this.renderBoard();
