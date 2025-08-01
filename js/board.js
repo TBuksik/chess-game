@@ -738,10 +738,24 @@ class ChessBoard {
                 }
             }
         } else if (touchDuration < 300 && !this.touchData.isDragging) {
-            // Handle tap (short touch without dragging)
-            this.handleSquareClick({
-                target: document.querySelector(`[data-row="${this.touchData.startSquare.row}"][data-col="${this.touchData.startSquare.col}"]`)
-            });
+            // Handle tap (short touch without dragging) - use same logic as click
+            const row = this.touchData.startSquare.row;
+            const col = this.touchData.startSquare.col;
+            
+            // If a square is selected and this is a valid move (including captures)
+            if (this.selectedSquare && this.isValidMoveSquare(row, col)) {
+                this.makeMove(this.selectedSquare.row, this.selectedSquare.col, row, col);
+                this.clearSelection();
+            } else {
+                // Select this square if it has a piece that can be moved
+                const piece = this.board[row][col];
+                if (piece && this.canSelectPiece(piece)) {
+                    this.selectSquare(row, col);
+                } else {
+                    // Clear selection if tapping on invalid square or enemy piece
+                    this.clearSelection();
+                }
+            }
         }
         
         // Reset touch data
