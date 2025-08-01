@@ -146,7 +146,7 @@ class ChessGame {
         this.playMoveSound(lastMove);
         
         // Trigger AI move if it's AI's turn
-        if (this.ai && this.currentPlayer === this.ai.color && this.gameState === 'playing') {
+        if (this.ai && this.currentPlayer === this.ai.color && (this.gameState === 'playing' || this.gameState === 'check')) {
             this.makeAIMove();
         }
     }
