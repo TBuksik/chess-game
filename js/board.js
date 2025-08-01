@@ -434,6 +434,9 @@ class ChessBoard {
                         this.lastMove.promotion = chosenPiece;
                         this.lastMove.piece = this.board[toRow][toCol]; // Update to the promoted piece
                         
+                        // Clear any selection that might remain
+                        this.clearSelection();
+                        
                         // Re-render board to show the promoted piece
                         this.renderBoard();
                         this.highlightLastMove();
@@ -560,6 +563,30 @@ class ChessBoard {
     setBoardState(boardState) {
         this.board = boardState;
         this.renderBoard();
+    }
+
+    /**
+     * Update a specific square's visual representation
+     */
+    updateSquare(row, col) {
+        const square = this.getSquareElement(row, col);
+        if (!square) return;
+        
+        // Remove existing piece
+        const existingPiece = square.querySelector('.piece');
+        if (existingPiece) {
+            existingPiece.remove();
+        }
+        
+        // Add new piece if present
+        const piece = this.board[row][col];
+        if (piece) {
+            const pieceElement = this.createPieceElement(piece);
+            square.appendChild(pieceElement);
+            
+            // Add promotion animation
+            pieceElement.classList.add('promoted');
+        }
     }
     
     /**

@@ -145,6 +145,20 @@ class ChessGame {
         // Play appropriate sound
         this.playMoveSound(lastMove);
         
+        // Show promotion notification if this was a promotion
+        if (lastMove.promotion) {
+            const pieceNames = {
+                'queen': 'Queen',
+                'rook': 'Rook', 
+                'bishop': 'Bishop',
+                'knight': 'Knight'
+            };
+            ChessUtils.showNotification(
+                `Pawn promoted to ${pieceNames[lastMove.promotion]}! ${this.currentPlayer.charAt(0).toUpperCase() + this.currentPlayer.slice(1)}'s turn.`,
+                'success'
+            );
+        }
+        
         // Trigger AI move if it's AI's turn
         if (this.ai && this.currentPlayer === this.ai.color && (this.gameState === 'playing' || this.gameState === 'check')) {
             this.makeAIMove();
