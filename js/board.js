@@ -396,40 +396,67 @@ class ChessBoard {
         this.board[fromRow][fromCol] = null;
         piece.moveTo(toRow, toCol);
         
+        // Update last move
+        this.lastMove = { from: [fromRow, fromCol], to: [toRow, toCol], piece, capturedPiece };
+        
         // Handle pawn promotion
         if (isPromotion) {
             if (isAIMove) {
                 // AI automatically promotes to queen
                 this.promotePawn(toRow, toCol, 'queen', piece.color);
-            } else {
-                // Show promotion modal for human player
-                this.showPromotionModal(piece.color).then(chosenPiece => {
-                    this.promotePawn(toRow, toCol, chosenPiece, piece.color);
-                    
-                    // Update last move with promotion info
-                    this.lastMove.promotion = chosenPiece;
-                    
-                    // Dispatch move event after promotion
+                this.lastMove.promotion = 'queen';
+                
+                // Animate move and render board
+                this.animateMove(fromRow, fromCol, toRow, toCol);
+                const renderDelay = capturedPiece ? 600 : 300;
+                setTimeout(() => {
+                    this.renderBoard();
+                    this.highlightLastMove();
                     this.dispatchMoveEvent();
-                });
+                }, renderDelay);
+            } else {
+                // Animate move first
+                this.animateMove(fromRow, fromCol, toRow, toCol);
+                
+                // Wait for animation to complete, then show promotion modal
+                const renderDelay = capturedPiece ? 600 : 300;
+                setTimeout(() => {
+                    // Render board first to show the pawn in its final position
+                    this.renderBoard();
+                    this.highlightLastMove();
+                    
+                    // Show promotion modal for human player
+                    this.showPromotionModal(piece.color).then(chosenPiece => {
+                        this.promotePawn(toRow, toCol, chosenPiece, piece.color);
+                        
+                        // Update last move with promotion info
+                        this.lastMove.promotion = chosenPiece;
+                        
+                        // Re-render board to show the promoted piece
+                        this.renderBoard();
+                        this.highlightLastMove();
+                        
+                        // Dispatch move event after promotion is complete
+                        this.dispatchMoveEvent();
+                    });
+                }, renderDelay);
+                
+                // Return early to prevent the normal move flow from continuing
+                return;
             }
-        }
-        
-        // Update last move
-        this.lastMove = { from: [fromRow, fromCol], to: [toRow, toCol], piece, capturedPiece };
-        
-        // Animate move
-        this.animateMove(fromRow, fromCol, toRow, toCol);
-        
-        // Re-render board - wait longer if there's a capture to let animation complete
-        const renderDelay = capturedPiece ? 600 : 300; // 600ms for captures, 300ms for normal moves
-        setTimeout(() => {
-            this.renderBoard();
-            this.highlightLastMove();
-        }, renderDelay);
-        
-        // Dispatch move event (unless it's a promotion that will be handled later)
-        if (!isPromotion || isAIMove) {
+        } else {
+            // Regular move (no promotion)
+            // Animate move
+            this.animateMove(fromRow, fromCol, toRow, toCol);
+            
+            // Re-render board - wait longer if there's a capture to let animation complete
+            const renderDelay = capturedPiece ? 600 : 300; // 600ms for captures, 300ms for normal moves
+            setTimeout(() => {
+                this.renderBoard();
+                this.highlightLastMove();
+            }, renderDelay);
+            
+            // Dispatch move event immediately for regular moves
             this.dispatchMoveEvent();
         }
         
@@ -765,10 +792,15 @@ class ChessBoard {
      * Promote a pawn to the chosen piece type
      */
     promotePawn(row, col, pieceType, color) {
-        this.board[row][col] = {
-            type: pieceType,
-            color: color
+        // Create the proper piece object using the same pattern as PieceFactory
+        const typeMap = {
+            'queen': 'Q', 'rook': 'R', 'bishop': 'B', 'knight': 'N'
         };
+        const colorPrefix = color === 'white' ? 'w' : 'b';
+        const notation = colorPrefix + typeMap[pieceType];
+        
+        // Create the new piece using PieceFactory
+        this.board[row][col] = PieceFactory.createFromNotation(notation, row, col);
         
         // Update the visual representation
         this.updateSquare(row, col);

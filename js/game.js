@@ -169,7 +169,9 @@ class ChessGame {
      * Make an AI move
      */
     async makeAIMove() {
-        if (!this.ai || (this.gameState !== 'playing' && this.gameState !== 'check')) return;
+        if (!this.ai || (this.gameState !== 'playing' && this.gameState !== 'check')) {
+            return;
+        }
         
         try {
             const boardState = this.board.getBoardState();
@@ -184,6 +186,8 @@ class ChessGame {
                 setTimeout(() => {
                     this.board.makeMove(fromRow, fromCol, toRow, toCol, true); // Pass true for AI move
                 }, 200); // Small delay for better UX
+            } else {
+                console.log('AI has no valid moves available');
             }
         } catch (error) {
             console.error('AI move error:', error);
