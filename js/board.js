@@ -642,6 +642,18 @@ class ChessBoard {
         const col = parseInt(square.dataset.col);
         const piece = this.board[row][col];
         
+        // If we have a piece selected and this is a valid move target, allow the touch to continue
+        if (this.selectedSquare && this.isValidMoveSquare(row, col)) {
+            // Allow this touch - it's a valid move/capture
+            this.touchData = {
+                startSquare: { row, col },
+                startTime: Date.now(),
+                startX: e.touches[0].clientX,
+                startY: e.touches[0].clientY
+            };
+            return;
+        }
+        
         // Check if the piece can be selected (respects turn system)
         if (piece && !this.canSelectPiece(piece)) {
             // Show different notifications based on game state
@@ -764,7 +776,7 @@ class ChessBoard {
                 this.makeMove(this.selectedSquare.row, this.selectedSquare.col, row, col);
                 this.clearSelection();
             } else {
-                // SECOND: Try to select this square if it has a piece that can be selected
+                // SECOND: Select this square if it has a piece (SAME LOGIC AS DESKTOP)
                 const piece = this.board[row][col];
                 console.log('Piece at tap location:', piece);
                 if (piece) {
