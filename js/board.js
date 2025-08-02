@@ -739,8 +739,18 @@ class ChessBoard {
             }
         } else if (touchDuration < 300 && !this.touchData.isDragging) {
             // Handle tap (short touch without dragging) - use SAME logic as desktop handleSquareClick
-            const row = this.touchData.startSquare.row;
-            const col = this.touchData.startSquare.col;
+            
+            // Find the square under the touch end position (where user actually tapped)
+            const endElement = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+            const endSquare = endElement?.closest('.square');
+            
+            if (!endSquare) {
+                this.clearSelection();
+                return;
+            }
+            
+            const row = parseInt(endSquare.dataset.row);
+            const col = parseInt(endSquare.dataset.col);
             
             // Debug logging for mobile capture issue
             console.log(`Mobile tap at (${row}, ${col})`);
