@@ -742,34 +742,17 @@ class ChessBoard {
             const row = this.touchData.startSquare.row;
             const col = this.touchData.startSquare.col;
             
-            // If a square is selected and this is a valid move
+            // If a square is selected and this is a valid move (including captures)
             if (this.selectedSquare && this.isValidMoveSquare(row, col)) {
                 this.makeMove(this.selectedSquare.row, this.selectedSquare.col, row, col);
                 this.clearSelection();
             } else {
-                // Select this square if it has a piece
+                // Select this square if it has a piece that can be selected
                 const piece = this.board[row][col];
-                if (piece) {
-                    if (this.canSelectPiece(piece)) {
-                        this.selectSquare(row, col);
-                    } else {
-                        // Show different notifications based on game state
-                        if (this.game && this.game.gameState !== 'playing' && this.game.gameState !== 'check') {
-                            const gameEndMessages = {
-                                'checkmate': 'Game over! Checkmate.',
-                                'stalemate': 'Game over! Stalemate.',
-                                'draw': 'Game over! Draw.'
-                            };
-                            ChessUtils.showNotification(
-                                gameEndMessages[this.game.gameState] || 'Game over!', 
-                                'warning'
-                            );
-                        } else if (this.game && piece.color !== this.game.currentPlayer) {
-                            ChessUtils.showNotification(`It's ${this.game.currentPlayer}'s turn!`, 'warning');
-                        }
-                        this.clearSelection();
-                    }
+                if (piece && this.canSelectPiece(piece)) {
+                    this.selectSquare(row, col);
                 } else {
+                    // Clear selection if tapping on invalid square, enemy piece, or empty square
                     this.clearSelection();
                 }
             }
