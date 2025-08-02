@@ -738,22 +738,32 @@ class ChessBoard {
                 }
             }
         } else if (touchDuration < 300 && !this.touchData.isDragging) {
-            // Handle tap (short touch without dragging) - mirror desktop click behavior exactly
+            // Handle tap (short touch without dragging) - use SAME logic as desktop handleSquareClick
             const row = this.touchData.startSquare.row;
             const col = this.touchData.startSquare.col;
             
-            // If a square is selected and this is a valid move (including captures)
+            // Debug logging for mobile capture issue
+            console.log(`Mobile tap at (${row}, ${col})`);
+            console.log('selectedSquare:', this.selectedSquare);
+            console.log('validMoves:', this.validMoves);
+            console.log('isValidMoveSquare result:', this.isValidMoveSquare(row, col));
+            
+            // FIRST: Check if this is a capture move (selectedSquare exists + valid target)
             if (this.selectedSquare && this.isValidMoveSquare(row, col)) {
+                console.log('Making move from mobile tap');
                 this.makeMove(this.selectedSquare.row, this.selectedSquare.col, row, col);
                 this.clearSelection();
             } else {
-                // Select this square if it has a piece that can be selected
+                // SECOND: Try to select this square if it has a piece that can be selected
                 const piece = this.board[row][col];
+                console.log('Piece at tap location:', piece);
                 if (piece) {
                     if (this.canSelectPiece(piece)) {
+                        console.log('Selecting piece for mobile');
                         this.selectSquare(row, col);
                     } else {
-                        // Show appropriate turn notification but don't break capture logic
+                        console.log('Cannot select piece - showing error');
+                        // Show appropriate error messages
                         if (this.game && this.game.gameState !== 'playing' && this.game.gameState !== 'check') {
                             const gameEndMessages = {
                                 'checkmate': 'Game over! Checkmate.',
@@ -770,6 +780,7 @@ class ChessBoard {
                         this.clearSelection();
                     }
                 } else {
+                    console.log('No piece at tap location - clearing selection');
                     this.clearSelection();
                 }
             }
