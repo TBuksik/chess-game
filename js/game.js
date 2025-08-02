@@ -159,6 +159,16 @@ class ChessGame {
             );
         }
         
+        // Show castling notification if this was castling
+        if (lastMove.castling) {
+            const castlingType = lastMove.castling.type === 'kingside' ? 'Kingside' : 'Queenside';
+            const playerColor = lastMove.piece.color === 'white' ? 'White' : 'Black';
+            ChessUtils.showNotification(
+                `${playerColor} castled ${castlingType.toLowerCase()}! ${this.currentPlayer.charAt(0).toUpperCase() + this.currentPlayer.slice(1)}'s turn.`,
+                'success'
+            );
+        }
+        
         // Trigger AI move if it's AI's turn
         if (this.ai && this.currentPlayer === this.ai.color && (this.gameState === 'playing' || this.gameState === 'check')) {
             this.makeAIMove();
@@ -537,6 +547,11 @@ class ChessGame {
         const [fromRow, fromCol] = move.from;
         const [toRow, toCol] = move.to;
         
+        // Handle castling notation
+        if (move.castling) {
+            return move.castling.type === 'kingside' ? 'O-O' : 'O-O-O';
+        }
+        
         let notation = '';
         
         // Piece letter (except for pawns)
@@ -559,6 +574,11 @@ class ChessGame {
         // Destination square
         notation += toSquare;
         
+        // Promotion notation
+        if (move.promotion) {
+            notation += '=' + move.promotion.charAt(0).toUpperCase();
+        }
+        
         // Check/checkmate notation (to be added after move is made)
         // This would be handled in the game state checking
         
@@ -577,23 +597,47 @@ class ChessGame {
         const lastMove = this.moveHistory.pop();
         const board = this.board.getBoardState();
         
-        // Restore piece position
-        const piece = board[lastMove.to[0]][lastMove.to[1]];
-        if (piece) {
-            board[lastMove.from[0]][lastMove.from[1]] = piece;
-            board[lastMove.to[0]][lastMove.to[1]] = null;
-            piece.moveTo(lastMove.from[0], lastMove.from[1]);
-            piece.hasMoved = piece.moveCount > 1;
-            piece.moveCount--;
-        }
-        
-        // Restore captured piece
-        if (lastMove.capturedPiece) {
-            board[lastMove.to[0]][lastMove.to[1]] = lastMove.capturedPiece;
-            const capturedArray = this.capturedPieces[lastMove.capturedPiece.color];
-            const index = capturedArray.findIndex(p => p.type === lastMove.capturedPiece.type);
-            if (index !== -1) {
-                capturedArray.splice(index, 1);
+        // Handle castling undo
+        if (lastMove.castling) {
+            const king = board[lastMove.to[0]][lastMove.to[1]];
+            const rook = board[lastMove.castling.rookTo[0]][lastMove.castling.rookTo[1]];
+            
+            // Move king back
+            if (king) {
+                board[lastMove.from[0]][lastMove.from[1]] = king;
+                board[lastMove.to[0]][lastMove.to[1]] = null;
+                king.moveTo(lastMove.from[0], lastMove.from[1]);
+                king.hasMoved = king.moveCount > 1;
+                king.moveCount--;
+            }
+            
+            // Move rook back
+            if (rook) {
+                board[lastMove.castling.rookFrom[0]][lastMove.castling.rookFrom[1]] = rook;
+                board[lastMove.castling.rookTo[0]][lastMove.castling.rookTo[1]] = null;
+                rook.moveTo(lastMove.castling.rookFrom[0], lastMove.castling.rookFrom[1]);
+                rook.hasMoved = rook.moveCount > 1;
+                rook.moveCount--;
+            }
+        } else {
+            // Restore piece position (normal move)
+            const piece = board[lastMove.to[0]][lastMove.to[1]];
+            if (piece) {
+                board[lastMove.from[0]][lastMove.from[1]] = piece;
+                board[lastMove.to[0]][lastMove.to[1]] = null;
+                piece.moveTo(lastMove.from[0], lastMove.from[1]);
+                piece.hasMoved = piece.moveCount > 1;
+                piece.moveCount--;
+            }
+            
+            // Restore captured piece
+            if (lastMove.capturedPiece) {
+                board[lastMove.to[0]][lastMove.to[1]] = lastMove.capturedPiece;
+                const capturedArray = this.capturedPieces[lastMove.capturedPiece.color];
+                const index = capturedArray.findIndex(p => p.type === lastMove.capturedPiece.type);
+                if (index !== -1) {
+                    capturedArray.splice(index, 1);
+                }
             }
         }
         

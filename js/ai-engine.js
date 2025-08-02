@@ -338,15 +338,38 @@ class ChessAI {
         
         const [fromRow, fromCol] = move.from;
         const [toRow, toCol] = move.to;
+        const piece = newBoard[fromRow][fromCol];
         
-        // Move the piece
-        newBoard[toRow][toCol] = newBoard[fromRow][fromCol];
-        newBoard[fromRow][fromCol] = null;
-        
-        // Update piece position
-        if (newBoard[toRow][toCol]) {
-            newBoard[toRow][toCol].row = toRow;
-            newBoard[toRow][toCol].col = toCol;
+        // Handle castling
+        if (piece && piece.type === 'king' && Math.abs(toCol - fromCol) === 2) {
+            const isKingside = toCol === 6;
+            const rookFromCol = isKingside ? 7 : 0;
+            const rookToCol = isKingside ? 5 : 3;
+            const rook = newBoard[fromRow][rookFromCol];
+            
+            // Move king
+            newBoard[toRow][toCol] = piece;
+            newBoard[fromRow][fromCol] = null;
+            piece.row = toRow;
+            piece.col = toCol;
+            
+            // Move rook
+            if (rook) {
+                newBoard[fromRow][rookToCol] = rook;
+                newBoard[fromRow][rookFromCol] = null;
+                rook.row = fromRow;
+                rook.col = rookToCol;
+            }
+        } else {
+            // Normal move
+            newBoard[toRow][toCol] = piece;
+            newBoard[fromRow][fromCol] = null;
+            
+            // Update piece position
+            if (piece) {
+                piece.row = toRow;
+                piece.col = toCol;
+            }
         }
         
         return newBoard;

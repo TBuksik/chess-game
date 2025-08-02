@@ -184,6 +184,7 @@ class ChessPiece {
             [1, -1],  [1, 0],  [1, 1]
         ];
         
+        // Normal king moves
         for (let [rowOffset, colOffset] of directions) {
             const newRow = this.row + rowOffset;
             const newCol = this.col + colOffset;
@@ -193,6 +194,49 @@ class ChessPiece {
                 if (!target || target.color !== this.color) {
                     moves.push([newRow, newCol]);
                 }
+            }
+        }
+        
+        // Castling moves
+        if (!this.hasMoved) {
+            const castlingMoves = this.getCastlingMoves(board);
+            moves.push(...castlingMoves);
+        }
+        
+        return moves;
+    }
+    
+    /**
+     * Get valid castling moves for the king
+     */
+    getCastlingMoves(board) {
+        const moves = [];
+        const backRank = this.color === 'white' ? 7 : 0;
+        
+        // Only allow castling if king is on its starting square
+        if (this.row !== backRank || this.col !== 4) {
+            return moves;
+        }
+        
+        // Check kingside castling (short castling)
+        const kingsideRook = board[backRank][7];
+        if (kingsideRook && kingsideRook.type === 'rook' && 
+            kingsideRook.color === this.color && !kingsideRook.hasMoved) {
+            
+            // Check if squares between king and rook are empty
+            if (!board[backRank][5] && !board[backRank][6]) {
+                moves.push([backRank, 6]); // King moves to g1/g8
+            }
+        }
+        
+        // Check queenside castling (long castling)
+        const queensideRook = board[backRank][0];
+        if (queensideRook && queensideRook.type === 'rook' && 
+            queensideRook.color === this.color && !queensideRook.hasMoved) {
+            
+            // Check if squares between king and rook are empty
+            if (!board[backRank][1] && !board[backRank][2] && !board[backRank][3]) {
+                moves.push([backRank, 2]); // King moves to c1/c8
             }
         }
         
@@ -301,6 +345,11 @@ class MoveValidator {
             return false;
         }
         
+        // Special validation for castling
+        if (piece.type === 'king' && Math.abs(toCol - piece.col) === 2) {
+            return this.isCastlingValid(piece, toRow, toCol, board);
+        }
+        
         // Check if move would put own king in check
         const testBoard = this.simulateMove(board, piece.row, piece.col, toRow, toCol);
         if (this.isKingInCheck(testBoard, piece.color)) {
@@ -318,13 +367,71 @@ class MoveValidator {
         const piece = newBoard[fromRow][fromCol];
         
         if (piece) {
-            newBoard[toRow][toCol] = piece;
-            newBoard[fromRow][fromCol] = null;
-            piece.row = toRow;
-            piece.col = toCol;
+            // Handle castling in simulation
+            if (piece.type === 'king' && Math.abs(toCol - fromCol) === 2) {
+                const isKingside = toCol === 6;
+                const rookFromCol = isKingside ? 7 : 0;
+                const rookToCol = isKingside ? 5 : 3;
+                const rook = newBoard[fromRow][rookFromCol];
+                
+                // Move king
+                newBoard[toRow][toCol] = piece;
+                newBoard[fromRow][fromCol] = null;
+                piece.row = toRow;
+                piece.col = toCol;
+                
+                // Move rook
+                if (rook) {
+                    newBoard[fromRow][rookToCol] = rook;
+                    newBoard[fromRow][rookFromCol] = null;
+                    rook.row = fromRow;
+                    rook.col = rookToCol;
+                }
+            } else {
+                // Normal move
+                newBoard[toRow][toCol] = piece;
+                newBoard[fromRow][fromCol] = null;
+                piece.row = toRow;
+                piece.col = toCol;
+            }
         }
         
         return newBoard;
+    }
+    
+    /**
+     * Check if castling move is valid
+     */
+    static isCastlingValid(king, toRow, toCol, board) {
+        // King must not be in check currently
+        if (this.isKingInCheck(board, king.color)) {
+            return false;
+        }
+        
+        const isKingside = toCol === 6; // g-file
+        const isQueenside = toCol === 2; // c-file
+        
+        if (isKingside) {
+            // Check that king doesn't pass through or end up in check
+            // Test king on f-file (5) and g-file (6)
+            for (let testCol = 5; testCol <= 6; testCol++) {
+                const testBoard = this.simulateMove(board, king.row, king.col, king.row, testCol);
+                if (this.isKingInCheck(testBoard, king.color)) {
+                    return false;
+                }
+            }
+        } else if (isQueenside) {
+            // Check that king doesn't pass through or end up in check
+            // Test king on d-file (3) and c-file (2)
+            for (let testCol = 3; testCol >= 2; testCol--) {
+                const testBoard = this.simulateMove(board, king.row, king.col, king.row, testCol);
+                if (this.isKingInCheck(testBoard, king.color)) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
     }
     
     /**

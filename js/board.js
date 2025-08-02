@@ -391,7 +391,27 @@ class ChessBoard {
         // Check for pawn promotion
         const isPromotion = this.isPawnPromotion(fromRow, fromCol, toRow, toCol);
         
-        // Move piece
+        // Check for castling
+        const isCastlingMove = this.isCastling(fromRow, fromCol, toRow, toCol);
+        
+        if (isCastlingMove) {
+            // Handle castling move
+            this.executeCastling(fromRow, fromCol, toRow, toCol);
+            
+            // Animate castling
+            this.animateCastling(fromRow, fromCol, toRow, toCol);
+            
+            // Re-render board after animation
+            setTimeout(() => {
+                this.renderBoard();
+                this.highlightLastMove();
+                this.dispatchMoveEvent();
+            }, 600); // Match castling animation duration
+            
+            return true;
+        }
+        
+        // Move piece (normal move)
         this.board[toRow][toCol] = piece;
         this.board[fromRow][fromCol] = null;
         piece.moveTo(toRow, toCol);
@@ -510,6 +530,33 @@ class ChessBoard {
                 }
             }, 500); // Match the animation duration
         }
+    }
+    
+    /**
+     * Animate castling move (both king and rook)
+     */
+    animateCastling(fromRow, fromCol, toRow, toCol) {
+        const isKingside = toCol === 6;
+        const rookFromCol = isKingside ? 7 : 0;
+        const rookToCol = isKingside ? 5 : 3;
+        
+        // Animate king
+        this.animateMove(fromRow, fromCol, toRow, toCol);
+        
+        // Animate rook
+        this.animateMove(fromRow, rookFromCol, fromRow, rookToCol);
+        
+        // Add castling class for special animation
+        const kingSquare = this.getSquareElement(fromRow, fromCol);
+        const rookSquare = this.getSquareElement(fromRow, rookFromCol);
+        const kingPiece = kingSquare.querySelector('.piece');
+        const rookPiece = rookSquare.querySelector('.piece');
+        
+        if (kingPiece) kingPiece.classList.add('castling');
+        if (rookPiece) rookPiece.classList.add('castling');
+        
+        // Play castling sound (using move sound for now)
+        ChessUtils.playSound('move');
     }
     
     /**
@@ -827,6 +874,51 @@ class ChessBoard {
         // White pawn reaching row 0 (top) or black pawn reaching row 7 (bottom)
         return (piece.color === 'white' && toRow === 0) || 
                (piece.color === 'black' && toRow === 7);
+    }
+    
+    /**
+     * Check if a move is a castling move
+     */
+    isCastling(fromRow, fromCol, toRow, toCol) {
+        const piece = this.board[fromRow][fromCol];
+        return piece && piece.type === 'king' && Math.abs(toCol - fromCol) === 2;
+    }
+    
+    /**
+     * Execute castling move (move both king and rook)
+     */
+    executeCastling(fromRow, fromCol, toRow, toCol) {
+        const king = this.board[fromRow][fromCol];
+        const isKingside = toCol === 6; // g-file
+        const rookFromCol = isKingside ? 7 : 0;
+        const rookToCol = isKingside ? 5 : 3;
+        const rook = this.board[fromRow][rookFromCol];
+        
+        // Move king
+        this.board[toRow][toCol] = king;
+        this.board[fromRow][fromCol] = null;
+        king.moveTo(toRow, toCol);
+        
+        // Move rook
+        this.board[fromRow][rookToCol] = rook;
+        this.board[fromRow][rookFromCol] = null;
+        rook.moveTo(fromRow, rookToCol);
+        
+        // Update last move to include castling info
+        this.lastMove = { 
+            from: [fromRow, fromCol], 
+            to: [toRow, toCol], 
+            piece: king, 
+            capturedPiece: null,
+            castling: {
+                type: isKingside ? 'kingside' : 'queenside',
+                rook: rook,
+                rookFrom: [fromRow, rookFromCol],
+                rookTo: [fromRow, rookToCol]
+            }
+        };
+        
+        return true;
     }
 
     /**
