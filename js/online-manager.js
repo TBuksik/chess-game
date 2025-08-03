@@ -43,12 +43,14 @@ class OnlineChessManager extends EventTarget {
         const isProduction = window.location.hostname === 'chess-game-one-amber.vercel.app';
         
         if (isProduction) {
-            // Use reliable WebSocket services for production
+            // For production, use reliable WebSocket services
             return {
-                // Primary: Socket.IO test server
-                url: 'wss://socketio-chat-h9jt.herokuapp.com/socket.io/?EIO=4&transport=websocket',
+                // Primary: Postman Echo WebSocket service (reliable for testing)
+                url: 'wss://ws.postman-echo.com/raw',
                 // Fallback: Echo WebSocket service
                 fallbackUrl: 'wss://echo.websocket.org',
+                // Alternative: Use Vercel API with polling (for future implementation)
+                apiUrl: 'https://chess-game-one-amber.vercel.app/api/chess',
                 protocols: [],
                 reconnect: true,
                 heartbeat: 30000

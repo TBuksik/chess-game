@@ -422,7 +422,7 @@ class OnlineGameUI {
             
             // Show info about demo server for production
             if (window.location.hostname === 'chess-game-one-amber.vercel.app') {
-                this.showNotification('🌐 Connected to demo WebSocket server! Online features are functional for testing.', 'info');
+                this.showNotification('🌐 Connected to demo WebSocket server! Online features are functional for testing. For production use, deploy your own WebSocket server.', 'info');
             } else {
                 this.showNotification('Connected to chess server!', 'success');
             }

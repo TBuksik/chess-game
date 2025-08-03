@@ -66,10 +66,17 @@ To upgrade to a production-ready online multiplayer system:
 
 ### Vercel Configuration
 
-The `vercel.json` file is configured to:
-- Serve static files (HTML, CSS, JS)
-- Support API routes (future WebSocket proxy)
+The `vercel.json` file is now correctly configured to:
+- Serve static files (HTML, CSS, JS) 
+- Support API routes using `rewrites` instead of deprecated `routes`
 - Enable CORS for cross-origin requests
+- Fix the deployment error caused by mixing `routes` with other properties
+
+**Fixed Issues:**
+- ✅ Removed deprecated `routes` configuration
+- ✅ Used modern `rewrites` approach for API routing
+- ✅ Maintained CORS headers for API endpoints
+- ✅ Resolved Vercel deployment failures
 
 ### File Structure for Production
 
