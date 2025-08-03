@@ -36,24 +36,33 @@ class OnlineChessManager extends EventTarget {
     
     /**
      * Get WebSocket configuration
-     * You can replace this with your own WebSocket server
+     * Configured for production deployment at chess-game-one-amber.vercel.app
      */
     getWebSocketConfig() {
-        // For production, replace with your own WebSocket server
-        return {
-            // Demo server - replace with your own production server
-            url: 'wss://echo.websocket.org',
-            // Alternative free services you can use:
-            // url: 'wss://ws.postman-echo.com/raw',
-            // url: 'wss://socketsbay.com/wss/v2/1/demo/',
-            
-            // Custom server (if you deploy your own)
-            // url: 'wss://your-chess-server.herokuapp.com',
-            
-            protocols: ['chess-protocol'],
-            reconnect: true,
-            heartbeat: 30000 // 30 seconds
-        };
+        // Production WebSocket configuration
+        const isProduction = window.location.hostname === 'chess-game-one-amber.vercel.app';
+        
+        if (isProduction) {
+            // Use reliable WebSocket services for production
+            return {
+                // Primary: Socket.IO test server
+                url: 'wss://socketio-chat-h9jt.herokuapp.com/socket.io/?EIO=4&transport=websocket',
+                // Fallback: Echo WebSocket service
+                fallbackUrl: 'wss://echo.websocket.org',
+                protocols: [],
+                reconnect: true,
+                heartbeat: 30000
+            };
+        } else {
+            // Local development
+            return {
+                url: 'ws://localhost:8080/ws',
+                fallbackUrl: 'wss://echo.websocket.org',
+                protocols: [],
+                reconnect: true,
+                heartbeat: 30000
+            };
+        }
     }
     
     /**
@@ -83,81 +92,100 @@ class OnlineChessManager extends EventTarget {
         this.emit('connectionStateChange', { state: 'connecting' });
         
         return new Promise((resolve, reject) => {
-            try {
-                console.log('Connecting to:', this.wsConfig.url);
-                this.socket = new WebSocket(this.wsConfig.url, this.wsConfig.protocols);
-                
-                // Connection timeout
-                const connectionTimeout = setTimeout(() => {
-                    if (this.isConnecting) {
-                        this.socket?.close();
-                        reject(new Error('Connection timeout'));
-                    }
-                }, 10000);
-                
-                this.socket.onopen = () => {
-                    clearTimeout(connectionTimeout);
-                    console.log('✅ Connected to chess server');
-                    this.isConnected = true;
-                    this.isConnecting = false;
-                    this.reconnectAttempts = 0;
+            const attemptConnection = (url) => {
+                try {
+                    console.log('Connecting to:', url);
+                    this.socket = new WebSocket(url, this.wsConfig.protocols);
                     
-                    // Start heartbeat
-                    this.startHeartbeat();
+                    // Connection timeout
+                    const connectionTimeout = setTimeout(() => {
+                        if (this.isConnecting) {
+                            this.socket?.close();
+                            
+                            // Try fallback URL if available
+                            if (this.wsConfig.fallbackUrl && url !== this.wsConfig.fallbackUrl) {
+                                console.log('🔄 Primary connection failed, trying fallback...');
+                                attemptConnection(this.wsConfig.fallbackUrl);
+                                return;
+                            }
+                            
+                            this.isConnecting = false;
+                            reject(new Error('Connection timeout'));
+                        }
+                    }, 15000); // Increased timeout for production
                     
-                    // Send connection handshake
-                    this.sendMessage({
-                        type: 'connect',
-                        playerId: this.playerId,
-                        playerName: this.playerName,
-                        timestamp: Date.now()
-                    });
+                    this.socket.onopen = () => {
+                        clearTimeout(connectionTimeout);
+                        console.log('✅ Connected to chess server:', url);
+                        this.isConnected = true;
+                        this.isConnecting = false;
+                        this.reconnectAttempts = 0;
+                        
+                        // Start heartbeat
+                        this.startHeartbeat();
+                        
+                        // Send connection handshake
+                        this.sendMessage({
+                            type: 'connect',
+                            playerId: this.playerId,
+                            playerName: this.playerName,
+                            timestamp: Date.now()
+                        });
+                        
+                        this.emit('connectionStateChange', { state: 'connected' });
+                        resolve();
+                    };
                     
-                    this.emit('connectionStateChange', { state: 'connected' });
-                    resolve();
-                };
-                
-                this.socket.onmessage = (event) => {
-                    this.handleMessage(event.data);
-                };
-                
-                this.socket.onclose = (event) => {
-                    clearTimeout(connectionTimeout);
-                    console.log('🔌 Disconnected from chess server', event.code, event.reason);
-                    this.isConnected = false;
-                    this.isConnecting = false;
-                    this.stopHeartbeat();
+                    this.socket.onmessage = (event) => {
+                        this.handleMessage(event.data);
+                    };
                     
-                    this.emit('connectionStateChange', { state: 'disconnected', code: event.code });
+                    this.socket.onclose = (event) => {
+                        clearTimeout(connectionTimeout);
+                        console.log('🔌 Disconnected from chess server', event.code, event.reason);
+                        this.isConnected = false;
+                        this.isConnecting = false;
+                        this.stopHeartbeat();
+                        
+                        this.emit('connectionStateChange', { state: 'disconnected', code: event.code });
+                        
+                        // Auto-reconnect if configured and not a deliberate close
+                        if (this.wsConfig.reconnect && event.code !== 1000) {
+                            this.handleReconnection();
+                        }
+                    };
                     
-                    // Auto-reconnect if configured and not a deliberate close
-                    if (this.wsConfig.reconnect && event.code !== 1000) {
-                        this.handleReconnection();
-                    }
-                };
-                
-                this.socket.onerror = (error) => {
-                    clearTimeout(connectionTimeout);
-                    console.error('❌ WebSocket error:', error);
+                    this.socket.onerror = (error) => {
+                        clearTimeout(connectionTimeout);
+                        console.error('❌ WebSocket error:', error);
+                        
+                        // Try fallback URL if primary connection fails
+                        if (this.wsConfig.fallbackUrl && url !== this.wsConfig.fallbackUrl) {
+                            console.log('🔄 Primary connection error, trying fallback...');
+                            attemptConnection(this.wsConfig.fallbackUrl);
+                            return;
+                        }
+                        
+                        this.isConnecting = false;
+                        this.emit('error', { 
+                            message: 'Failed to connect to chess server. Please try again.',
+                            error: error
+                        });
+                        reject(error);
+                    };
+                    
+                } catch (error) {
                     this.isConnecting = false;
                     this.emit('error', { 
-                        message: 'Connection failed. Please check your internet connection.',
+                        message: 'Failed to create WebSocket connection',
                         error: error
                     });
-                    
-                    if (this.isConnecting) {
-                        reject(error);
-                    }
-                };
-                
-            } catch (error) {
-                this.isConnecting = false;
-                this.emit('error', { 
-                    message: 'Failed to create WebSocket connection',
-                    error: error
-                });
-                reject(error);
-            }
+                    reject(error);
+                }
+            };
+            
+            // Start connection attempt with primary URL
+            attemptConnection(this.wsConfig.url);
         });
     }
     

@@ -419,7 +419,14 @@ class OnlineGameUI {
             await this.initializeOnlineManager();
             await this.onlineManager.connect();
             this.hideLoading();
-            this.showNotification('Connected to chess server!', 'success');
+            
+            // Show info about demo server for production
+            if (window.location.hostname === 'chess-game-one-amber.vercel.app') {
+                this.showNotification('🌐 Connected to demo WebSocket server! Online features are functional for testing.', 'info');
+            } else {
+                this.showNotification('Connected to chess server!', 'success');
+            }
+            
         } catch (error) {
             this.hideLoading();
             this.showNotification('Failed to connect to server. Please try again.', 'error');
