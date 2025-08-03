@@ -6,6 +6,7 @@
   "scripts": {
     "start": "http-server -p 8000",
     "dev": "http-server -p 8000 -c-1",
+    "server": "node server.js",
     "build": "echo 'No build process needed for vanilla JS'",
     "test": "echo 'Tests not implemented yet'",
     "lint": "eslint js/**/*.js",
@@ -35,6 +36,9 @@
   "devDependencies": {
     "http-server": "^14.1.1",
     "eslint": "^8.0.0"
+  },
+  "dependencies": {
+    "ws": "^8.14.2"
   },
   "engines": {
     "node": ">=14.0.0"

@@ -21,13 +21,21 @@ class ChessGame {
         this.accumulatedTime = { white: 0, black: 0 }; // Track fractional seconds
         this.tenSecondWarningPlayed = { white: false, black: false }; // Track if warning sound was played
         
-        this.gameMode = gameMode; // 'local', 'easy', 'medium', 'hard'
+        this.gameMode = gameMode; // 'local', 'easy', 'medium', 'hard', 'online'
         this.ai = null;
+        
+        // Online mode properties
+        this.onlineManager = null;
+        this.playerColor = null; // Will be set when joining/creating online game
+        this.isOnlineGame = gameMode === 'online';
         
         // Initialize AI if needed
         if (['easy', 'medium', 'hard'].includes(gameMode)) {
             this.ai = new ChessAI(gameMode, 'black');
         }
+        
+        // Online manager will be set by the OnlineGameUI when needed
+        // Don't initialize it here to avoid conflicts
         
         // Give board a reference to the game for turn validation
         this.board.game = this;
@@ -68,6 +76,43 @@ class ChessGame {
         if (hintBtn) {
             hintBtn.addEventListener('click', this.showHint.bind(this));
         }
+    }
+    
+    /**
+     * Setup online game handlers
+     */
+    setupOnlineHandlers() {
+        if (!this.onlineManager) return;
+        
+        // Handle incoming moves from opponent
+        this.onlineManager.addEventListener('moveReceived', (event) => {
+            this.handleOnlineMove(event.detail);
+        });
+        
+        // Handle game state updates
+        this.onlineManager.addEventListener('gameStateUpdate', (event) => {
+            this.handleGameStateUpdate(event.detail);
+        });
+        
+        // Handle player assignment
+        this.onlineManager.addEventListener('playerAssigned', (event) => {
+            this.playerColor = event.detail;
+            this.updatePlayerUI();
+        });
+        
+        // Handle opponent connection status
+        this.onlineManager.addEventListener('opponentConnected', () => {
+            this.updatePlayerUI();
+        });
+        
+        this.onlineManager.addEventListener('opponentDisconnected', () => {
+            this.updatePlayerUI();
+        });
+        
+        // Handle game end
+        this.onlineManager.addEventListener('gameEnd', (event) => {
+            this.handleGameEnd(event.detail);
+        });
     }
     
     /**
@@ -150,6 +195,25 @@ class ChessGame {
         // Play appropriate sound
         this.playMoveSound(lastMove);
         
+        // Send move to opponent if online game
+        if (this.isOnlineGame && this.onlineManager && this.onlineManager.isInRoom()) {
+            this.onlineManager.sendMove({
+                from: lastMove.from,
+                to: lastMove.to,
+                piece: {
+                    type: lastMove.piece.type,
+                    color: lastMove.piece.color
+                },
+                capturedPiece: lastMove.capturedPiece ? {
+                    type: lastMove.capturedPiece.type,
+                    color: lastMove.capturedPiece.color
+                } : null,
+                promotion: lastMove.promotion,
+                castling: lastMove.castling,
+                timestamp: Date.now()
+            });
+        }
+        
         // Show promotion notification if this was a promotion
         if (lastMove.promotion) {
             const pieceNames = {
@@ -167,7 +231,7 @@ class ChessGame {
         // Show castling notification if this was castling
         if (lastMove.castling) {
             const castlingType = lastMove.castling.type === 'kingside' ? 'Kingside' : 'Queenside';
-            const playerColor = lastMove.piece.color === 'white' ? 'White' : 'Black';
+            const playerColor = lastMove.piece.color === 'white' ? 'Black' : 'White';
             ChessUtils.showNotification(
                 `${playerColor} castled ${castlingType.toLowerCase()}! ${this.currentPlayer.charAt(0).toUpperCase() + this.currentPlayer.slice(1)}'s turn.`,
                 'success'
@@ -186,6 +250,11 @@ class ChessGame {
     isValidTurn(piece) {
         // In AI mode, prevent human from moving AI pieces
         if (this.ai && piece.color === this.ai.color) {
+            return false;
+        }
+        
+        // In online mode, only allow moves for the player's assigned color
+        if (this.isOnlineGame && this.playerColor && piece.color !== this.playerColor) {
             return false;
         }
         
@@ -222,6 +291,42 @@ class ChessGame {
             console.error('AI move error:', error);
             ChessUtils.showNotification('AI encountered an error', 'error');
         }
+    }
+    
+    /**
+     * Handle an online move received from opponent
+     */
+    handleOnlineMove(moveData) {
+        if (!this.isOnlineGame || !moveData) {
+            return;
+        }
+        
+        // Verify it's the opponent's turn
+        if (this.playerColor === this.currentPlayer) {
+            console.warn('Received move when it\'s our turn');
+            return;
+        }
+        
+        try {
+            const { from, to } = moveData;
+            const [fromRow, fromCol] = from;
+            const [toRow, toCol] = to;
+            
+            // Apply the move directly to the board
+            this.board.makeMove(fromRow, fromCol, toRow, toCol, true, true); // true for opponent move, true for online
+        } catch (error) {
+            console.error('Error handling online move:', error);
+            ChessUtils.showNotification('Error processing opponent\'s move', 'error');
+        }
+    }
+    
+    /**
+     * Set the online manager for this game
+     */
+    setOnlineManager(onlineManager) {
+        this.onlineManager = onlineManager;
+        this.isOnlineGame = true;
+        this.setupOnlineHandlers();
     }
     
     /**

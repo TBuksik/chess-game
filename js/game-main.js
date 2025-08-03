@@ -62,13 +62,18 @@ class ChessGamePage {
             // Update player UI for AI mode
             this.updatePlayerNamesForGameMode();
             
-            // Show game mode notification
-            setTimeout(() => {
-                const modeText = this.gameMode === 'local' ? 'Local 1v1' : `${this.gameMode} Bot`;
-                if (typeof ChessUtils !== 'undefined' && ChessUtils.showNotification) {
-                    ChessUtils.showNotification(`Starting ${modeText} game! White moves first.`, 'info');
-                }
-            }, 500);
+            // Handle online mode
+            if (this.gameMode === 'online') {
+                this.initializeOnlineMode();
+            } else {
+                // Show game mode notification for non-online modes
+                setTimeout(() => {
+                    const modeText = this.gameMode === 'local' ? 'Local 1v1' : `${this.gameMode} Bot`;
+                    if (typeof ChessUtils !== 'undefined' && ChessUtils.showNotification) {
+                        ChessUtils.showNotification(`Starting ${modeText} game! White moves first.`, 'info');
+                    }
+                }, 500);
+            }
             
             console.log(`Chess game initialized successfully in ${this.gameMode} mode`);
             
@@ -151,6 +156,39 @@ class ChessGamePage {
             if (currentNameElement) {
                 currentNameElement.textContent = 'You';
             }
+        }
+    }
+    
+    /**
+     * Initialize online mode
+     */
+    initializeOnlineMode() {
+        try {
+            // Initialize online UI
+            if (typeof OnlineGameUI !== 'undefined') {
+                this.onlineUI = new OnlineGameUI();
+                
+                // Show online modal to set up connection
+                setTimeout(() => {
+                    this.onlineUI.showOnlineModal();
+                }, 500);
+                
+                // Make online UI globally accessible
+                window.onlineGameUI = this.onlineUI;
+                
+                console.log('Online mode initialized successfully');
+            } else {
+                throw new Error('OnlineGameUI class not available');
+            }
+        } catch (error) {
+            console.error('Failed to initialize online mode:', error);
+            ChessUtils.showNotification('Failed to initialize online mode. Switching to local mode.', 'error');
+            
+            // Fallback to local mode
+            this.gameMode = 'local';
+            this.game.gameMode = 'local';
+            this.game.isOnlineGame = false;
+            this.updatePlayerNamesForGameMode();
         }
     }
     
