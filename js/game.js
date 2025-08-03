@@ -19,6 +19,7 @@ class ChessGame {
         this.timerInterval = null;
         this.timeIncrement = 0; // Increment per move in seconds (0 for no increment)
         this.accumulatedTime = { white: 0, black: 0 }; // Track fractional seconds
+        this.tenSecondWarningPlayed = { white: false, black: false }; // Track if warning sound was played
         
         this.gameMode = gameMode; // 'local', 'easy', 'medium', 'hard'
         this.ai = null;
@@ -82,6 +83,7 @@ class ChessGame {
         // Reset timers to default (10 minutes each)
         this.timers = { white: 600, black: 600 };
         this.accumulatedTime = { white: 0, black: 0 }; // Reset accumulated time
+        this.tenSecondWarningPlayed = { white: false, black: false }; // Reset warning flags
         this.isTimerActive = false;
         this.currentPlayerStartTime = null;
         if (this.timerInterval) {
@@ -109,6 +111,9 @@ class ChessGame {
             const difficultyText = this.gameMode.charAt(0).toUpperCase() + this.gameMode.slice(1);
             ChessUtils.showNotification(`New game vs ${difficultyText} Bot started! Timer: 10 minutes each`, 'success');
         }
+        
+        // Play game start sound
+        ChessUtils.playSound('game-start');
         
         // If AI is white, make the first move
         if (this.ai && this.currentPlayer === this.ai.color) {
@@ -274,6 +279,12 @@ class ChessGame {
                 return;
             }
             
+            // Play ten-seconds warning sound when time is running low
+            if (Math.floor(newTime) === 10 && !this.tenSecondWarningPlayed[this.currentPlayer]) {
+                ChessUtils.playSound('ten-seconds');
+                this.tenSecondWarningPlayed[this.currentPlayer] = true;
+            }
+            
             this.updateTimerDisplay();
         }, 100); // Update every 100ms for smooth countdown
     }
@@ -389,6 +400,7 @@ class ChessGame {
         this.timers.black = blackTime;
         this.timeIncrement = increment;
         this.accumulatedTime = { white: 0, black: 0 }; // Reset accumulated time
+        this.tenSecondWarningPlayed = { white: false, black: false }; // Reset warning flags
         this.updateTimerDisplay();
     }
     
@@ -832,9 +844,16 @@ class ChessGame {
      */
     playMoveSound(move) {
         if (this.gameState === 'checkmate') {
-            ChessUtils.playSound('checkmate');
+            ChessUtils.playSound('game-end');
+        } else if (this.gameState === 'stalemate' || this.gameState === 'draw') {
+            ChessUtils.playSound('game-draw');
         } else if (this.gameState === 'check') {
             ChessUtils.playSound('check');
+        } else if (move.promotion) {
+            ChessUtils.playSound('promote');
+        } else if (move.castling) {
+            // Castling sound is already played in board.js
+            return;
         } else if (move.capturedPiece) {
             ChessUtils.playSound('capture');
         } else {

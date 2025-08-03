@@ -91,8 +91,43 @@ function formatTime(seconds) {
  * @param {string} soundName - Name of the sound to play
  */
 function playSound(soundName) {
-    // Sound effects can be added later
-    console.log(`Sound: ${soundName}`);
+    try {
+        // Map sound names to file names
+        const soundFiles = {
+            'move': 'move-self.mp3',
+            'capture': 'capture.mp3',
+            'castle': 'castle.mp3',
+            'check': 'move-check.mp3',
+            'promote': 'promote.mp3',
+            'illegal': 'illegal.mp3',
+            'game-start': 'game-start.mp3',
+            'game-end': 'game-end.mp3',
+            'game-draw': 'game-draw.mp3',
+            'notify': 'notify.mp3',
+            'ten-seconds': 'tenseconds.mp3'
+        };
+
+        const fileName = soundFiles[soundName];
+        if (!fileName) {
+            console.warn(`Unknown sound: ${soundName}`);
+            return;
+        }
+
+        const audio = new Audio(`assets/sounds/${fileName}`);
+        audio.volume = 0.5; // Set default volume to 50%
+        
+        // Play the audio
+        const playPromise = audio.play();
+        
+        // Handle browsers that require user interaction before playing audio
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.warn(`Could not play sound ${soundName}:`, error);
+            });
+        }
+    } catch (error) {
+        console.warn(`Error playing sound ${soundName}:`, error);
+    }
 }
 
 /**
@@ -104,6 +139,9 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.textContent = message;
+    
+    // Play notification sound
+    playSound('notify');
     
     // Style the notification
     Object.assign(notification.style, {

@@ -179,8 +179,10 @@ class ChessBoard {
                     gameEndMessages[this.game.gameState] || 'Game over!', 
                     'warning'
                 );
+                ChessUtils.playSound('illegal');
             } else if (this.game && piece && piece.color !== this.game.currentPlayer) {
                 ChessUtils.showNotification(`It's ${this.game.currentPlayer}'s turn!`, 'warning');
+                ChessUtils.playSound('illegal');
             }
             return;
         }
@@ -366,6 +368,7 @@ class ChessBoard {
                 'warning'
             );
             Animation.shake(this.getSquareElement(fromRow, fromCol));
+            ChessUtils.playSound('illegal');
             return false;
         }
         
@@ -373,12 +376,14 @@ class ChessBoard {
         if (this.game && !isAIMove && !this.game.isValidTurn(piece)) {
             ChessUtils.showNotification(`It's ${this.game.currentPlayer}'s turn!`, 'warning');
             Animation.shake(this.getSquareElement(fromRow, fromCol));
+            ChessUtils.playSound('illegal');
             return false;
         }
         
         // Check if move is valid
         if (!MoveValidator.isValidMove(piece, toRow, toCol, this.board, {})) {
             Animation.shake(this.getSquareElement(fromRow, fromCol));
+            ChessUtils.playSound('illegal');
             return false;
         }
         
@@ -508,8 +513,7 @@ class ChessBoard {
         piece.classList.add('moving');
         piece.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
         
-        // Play move sound
-        ChessUtils.playSound('move');
+        // Sound is handled by game.js playMoveSound method
     }
     
     /**
@@ -555,8 +559,8 @@ class ChessBoard {
         if (kingPiece) kingPiece.classList.add('castling');
         if (rookPiece) rookPiece.classList.add('castling');
         
-        // Play castling sound (using move sound for now)
-        ChessUtils.playSound('move');
+        // Play castling sound
+        ChessUtils.playSound('castle');
     }
     
     /**
@@ -990,8 +994,8 @@ class ChessBoard {
         // Update the visual representation
         this.updateSquare(row, col);
         
-        // Play promotion sound (using capture sound for now)
-        ChessUtils.playSound('capture');
+        // Play promotion sound
+        ChessUtils.playSound('promote');
     }
 }
 
